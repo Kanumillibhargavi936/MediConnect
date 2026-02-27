@@ -1,47 +1,47 @@
 package com.edutech.progressive.service.impl;
-
 import java.util.ArrayList;
+ 
 import java.util.List;
-
+import org.springframework.stereotype.Service;
 import com.edutech.progressive.entity.Clinic;
+ 
 import com.edutech.progressive.service.ClinicService;
-
-public class ClinicServiceImplJpa  implements ClinicService
-{
-
+@Service
+ 
+public class ClinicServiceImplJpa implements ClinicService {
+    public ClinicServiceImplJpa() {
+ 
+    }
     @Override
+ 
     public List<Clinic> getAllClinics() {
-        // TODO Auto-generated method stub
-       List<Clinic> clinics=new ArrayList<>();
-       return clinics;
-       // throw new UnsupportedOperationException("Unimplemented method 'getAllClinics'");
+ 
+        return new ArrayList<>();
+ 
     }
-
     @Override
+ 
     public Clinic getClinicById(int clinicId) {
-        // TODO Auto-generated method stub
-       return null;
-
-       // throw new UnsupportedOperationException("Unimplemented method 'getClinicById'");
+ 
+        return null;
+ 
     }
-
     @Override
+ 
     public Integer addClinic(Clinic clinic) {
-        // TODO Auto-generated method stub
-       return -1;
-       // throw new UnsupportedOperationException("Unimplemented method 'addClinic'");
+ 
+        return -1;
+ 
     }
-
     @Override
+ 
     public void updateClinic(Clinic clinic) {
-        // TODO Auto-generated method stub
-        //throw new UnsupportedOperationException("Unimplemented method 'updateClinic'");
+ 
     }
-
     @Override
+ 
     public void deleteClinic(int clinicId) {
-        // TODO Auto-generated method stub
-       // throw new UnsupportedOperationException("Unimplemented method 'deleteClinic'");
+ 
     }
-
+ 
 }
