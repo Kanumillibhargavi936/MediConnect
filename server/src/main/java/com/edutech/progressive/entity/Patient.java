@@ -1,45 +1,38 @@
+ 
 package com.edutech.progressive.entity;
  
+import javax.persistence.*;
 import java.util.Date;
- 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
  
 @Entity
 @Table(name = "patient")
 public class Patient {
  
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  // <-- NEW: let DB generate ids
     @Column(name = "patient_id")
     private int patientId;
  
-    @Column(name = "full_name", nullable = false)
+    @Column(name = "full_name")
     private String fullName;
  
-    @Column(name = "date_of_birth")
     @Temporal(TemporalType.DATE)
+    @Column(name = "date_of_birth")
     private Date dateOfBirth;
  
-    @Column(name = "contact_number", length = 15)
+    @Column(name = "contact_number")
     private String contactNumber;
  
-    @Column(name = "email", length = 100, nullable = false)
+    @Column(name = "email")
     private String email;
  
-    @Column(name = "address", length = 255)
+    @Column(name = "address")
     private String address;
  
-    public Patient() {
-    }
+    public Patient() {}
  
-    public Patient(int patientId, String fullName, Date dateOfBirth, String contactNumber, String email, String address) {
+    public Patient(int patientId, String fullName, Date dateOfBirth,
+                   String contactNumber, String email, String address) {
         this.patientId = patientId;
         this.fullName = fullName;
         this.dateOfBirth = dateOfBirth;

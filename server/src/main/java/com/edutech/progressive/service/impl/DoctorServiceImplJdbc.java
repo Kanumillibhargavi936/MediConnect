@@ -20,7 +20,7 @@ public class DoctorServiceImplJdbc implements DoctorService {
     @Override
     public List<Doctor> getAllDoctors() throws Exception {
         try {
-            return doctorDAO.getAllDoctors(); // must be non-null
+            return doctorDAO.getAllDoctors();
         } catch (SQLException e) {
             throw new Exception("Failed to fetch doctors", e);
         }
@@ -38,11 +38,13 @@ public class DoctorServiceImplJdbc implements DoctorService {
     @Override
     public List<Doctor> getDoctorSortedByExperience() throws Exception {
         try {
-            // Either use DAO's ORDER BY or sort in service:
             List<Doctor> all = doctorDAO.getAllDoctors();
             return all.stream()
-                      .sorted(Comparator.comparingInt(Doctor::getYearsOfExperience))
-                      .collect(Collectors.toList());
+                    .sorted(Comparator.comparingInt(d -> {
+                        Integer y = d.getYearsOfExperience();
+                        return y == null ? 0 : y;
+                    }))
+                    .collect(Collectors.toList());
         } catch (SQLException e) {
             throw new Exception("Failed to sort doctors by experience", e);
         }
