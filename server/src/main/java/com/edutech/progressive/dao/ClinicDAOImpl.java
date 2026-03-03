@@ -130,6 +130,46 @@ public class ClinicDAOImpl implements ClinicDAO {
         return list;
     }
 
+    @Override
+    public List<Clinic> getAllClinicByLocation(String location) throws SQLException {
+        final String sql = "SELECT clinic_id, clinic_name, location, doctor_id, contact_number, established_year " +
+                           "FROM clinic WHERE location = ?";
+        List<Clinic> list = new ArrayList<>();
+
+        try (Connection conn = DatabaseConnectionManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, location);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapRowToClinic(rs));
+                }
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public List<Clinic> getAllClinicByDoctorId(int doctorId) throws SQLException {
+        final String sql = "SELECT clinic_id, clinic_name, location, doctor_id, contact_number, established_year " +
+                           "FROM clinic WHERE doctor_id = ?";
+        List<Clinic> list = new ArrayList<>();
+
+        try (Connection conn = DatabaseConnectionManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, doctorId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapRowToClinic(rs));
+                }
+            }
+        }
+        return list;
+    }
+
     // ---------- helper ----------
     private Clinic mapRowToClinic(ResultSet rs) throws SQLException {
         Clinic c = new Clinic();

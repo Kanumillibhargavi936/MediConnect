@@ -6,17 +6,17 @@ import java.util.List;
 
 public interface ClinicService {
 
-    List<Clinic> getAllClinics() throws Exception;
+    List<Clinic> getAllClinics();
 
-    Clinic getClinicById(int clinicId) throws Exception;
+    Clinic getClinicById(int clinicId);
 
-    Integer addClinic(Clinic clinic) throws Exception;
+    Integer addClinic(Clinic clinic);
 
-    void updateClinic(Clinic clinic) throws Exception;
+    void updateClinic(Clinic clinic);
 
-    void deleteClinic(int clinicId) throws Exception;
+    void deleteClinic(int clinicId);
 
-    List<Clinic> getAllClinicByLocation(String location) throws Exception;
+    List<Clinic> getAllClinicByLocation(String location);
 
-    List<Clinic> getAllClinicByDoctorId(int doctorId) throws Exception;
+    List<Clinic> getAllClinicByDoctorId(int doctorId);
 }

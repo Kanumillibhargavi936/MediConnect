@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface ClinicDAO {
+
     int addClinic(Clinic clinic) throws SQLException;
 
     Clinic getClinicById(int clinicId) throws SQLException;
@@ -15,4 +16,8 @@ public interface ClinicDAO {
     void deleteClinic(int clinicId) throws SQLException;
 
     List<Clinic> getAllClinics() throws SQLException;
+
+    List<Clinic> getAllClinicByLocation(String location) throws SQLException;
+
+    List<Clinic> getAllClinicByDoctorId(int doctorId) throws SQLException;
 }
