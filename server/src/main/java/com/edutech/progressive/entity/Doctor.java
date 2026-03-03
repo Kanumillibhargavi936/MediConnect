@@ -1,10 +1,15 @@
- 
 package com.edutech.progressive.entity;
  
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+ 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  
 @Entity
 @Table(name = "doctor")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Doctor {
  
     @Id
@@ -12,33 +17,28 @@ public class Doctor {
     @Column(name = "doctor_id")
     private Integer doctorId;
  
-    @Column(name = "full_name", nullable = false, length = 255)
+    @Column(name = "full_name", nullable = false)
     private String fullName;
  
-    @Column(name = "specialty", length = 100)
+    @Column(name = "specialty")
     private String specialty;
  
-    @Column(name = "contact_number", length = 15)
+    @Column(name = "contact_number")
     private String contactNumber;
  
-    @Column(name = "email", nullable = false, length = 100)
+    @Column(name = "email", nullable = false)
     private String email;
  
     @Column(name = "years_of_experience")
     private Integer yearsOfExperience;
  
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore // prevent infinite recursion: doctor -> clinics -> doctor -> ...
+    private List<Clinic> clinics = new ArrayList<>();
+ 
     public Doctor() {}
  
-    public Doctor(Integer doctorId, String fullName, String specialty,
-                  String contactNumber, String email, Integer yearsOfExperience) {
-        this.doctorId = doctorId;
-        this.fullName = fullName;
-        this.specialty = specialty;
-        this.contactNumber = contactNumber;
-        this.email = email;
-        this.yearsOfExperience = yearsOfExperience;
-    }
- 
+    // getters and setters
     public Integer getDoctorId() { return doctorId; }
     public void setDoctorId(Integer doctorId) { this.doctorId = doctorId; }
  
@@ -56,4 +56,7 @@ public class Doctor {
  
     public Integer getYearsOfExperience() { return yearsOfExperience; }
     public void setYearsOfExperience(Integer yearsOfExperience) { this.yearsOfExperience = yearsOfExperience; }
+ 
+    public List<Clinic> getClinics() { return clinics; }
+    public void setClinics(List<Clinic> clinics) { this.clinics = clinics; }
 }

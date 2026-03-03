@@ -1,14 +1,20 @@
 package com.edutech.progressive.service.impl;
+ 
 import com.edutech.progressive.dao.ClinicDAO;
 import com.edutech.progressive.entity.Clinic;
 import com.edutech.progressive.service.ClinicService;
+ 
 import java.sql.SQLException;
 import java.util.List;
+ 
 public class ClinicServiceImplJdbc implements ClinicService {
+ 
     private final ClinicDAO clinicDAO;
+ 
     public ClinicServiceImplJdbc(ClinicDAO clinicDAO) {
         this.clinicDAO = clinicDAO;
     }
+ 
     @Override
     public List<Clinic> getAllClinics() {
         try {
@@ -18,6 +24,7 @@ public class ClinicServiceImplJdbc implements ClinicService {
             throw new RuntimeException("Failed to fetch clinics", e);
         }
     }
+ 
     @Override
     public Clinic getClinicById(int clinicId) {
         try {
@@ -26,6 +33,7 @@ public class ClinicServiceImplJdbc implements ClinicService {
             throw new RuntimeException("Failed to fetch clinic by id: " + clinicId, e);
         }
     }
+ 
     @Override
     public Integer addClinic(Clinic clinic) {
         try {
@@ -34,6 +42,7 @@ public class ClinicServiceImplJdbc implements ClinicService {
             throw new RuntimeException("Failed to add clinic", e);
         }
     }
+ 
     @Override
     public void updateClinic(Clinic clinic) {
         try {
@@ -42,6 +51,7 @@ public class ClinicServiceImplJdbc implements ClinicService {
             throw new RuntimeException("Failed to update clinic", e);
         }
     }
+ 
     @Override
     public void deleteClinic(int clinicId) {
         try {
@@ -49,5 +59,17 @@ public class ClinicServiceImplJdbc implements ClinicService {
         } catch (SQLException e) {
             throw new RuntimeException("Failed to delete clinic", e);
         }
+    }
+
+    @Override
+    public List<Clinic> getAllClinicByLocation(String location) throws Exception {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAllClinicByLocation'");
+    }
+
+    @Override
+    public List<Clinic> getAllClinicByDoctorId(int doctorId) throws Exception {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAllClinicByDoctorId'");
     }
 }
