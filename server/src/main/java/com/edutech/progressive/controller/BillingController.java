@@ -1,23 +1,23 @@
 package com.edutech.progressive.controller;
-
+ 
 import com.edutech.progressive.entity.Billing;
 import com.edutech.progressive.service.BillingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+ 
 import java.util.Collections;
-
+ 
 @RestController
 @RequestMapping("/billing")
 public class BillingController {
-
+ 
     private final BillingService billingService;
-
+ 
     public BillingController(BillingService billingService) {
         this.billingService = billingService;
     }
-
+ 
     @GetMapping
     public ResponseEntity<?> getAllBills() {
         try {
@@ -27,7 +27,7 @@ public class BillingController {
                     .body("Error fetching bills: " + e.getMessage());
         }
     }
-
+ 
     @GetMapping("/{billingId}")
     public ResponseEntity<?> getBillById(@PathVariable int billingId) {
         try {
@@ -37,7 +37,7 @@ public class BillingController {
                     .body("Error fetching bill: " + e.getMessage());
         }
     }
-
+ 
     @PostMapping
     public ResponseEntity<?> createBill(@RequestBody Billing billing) {
         try {
@@ -51,7 +51,7 @@ public class BillingController {
                     .body("Error creating bill: " + e.getMessage());
         }
     }
-
+ 
     @PutMapping("/{billingId}")
     public ResponseEntity<?> updateBill(@PathVariable int billingId, @RequestBody Billing billing) {
         try {
@@ -66,7 +66,7 @@ public class BillingController {
                     .body("Error updating bill: " + e.getMessage());
         }
     }
-
+ 
     @DeleteMapping("/{billingId}")
     public ResponseEntity<?> deleteBill(@PathVariable int billingId) {
         try {
@@ -77,7 +77,7 @@ public class BillingController {
                     .body("Error deleting bill: " + e.getMessage());
         }
     }
-
+ 
     @GetMapping("/patient/{patientId}")
     public ResponseEntity<?> getBillsByPatient(@PathVariable int patientId) {
         try {
@@ -87,7 +87,7 @@ public class BillingController {
                     .body("Error fetching bills by patient: " + e.getMessage());
         }
     }
-
+ 
     @GetMapping("/clinic/{clinicId}")
     public ResponseEntity<?> getBillsByClinic(@PathVariable int clinicId) {
         try {
@@ -97,7 +97,7 @@ public class BillingController {
                     .body("Error fetching bills by clinic: " + e.getMessage());
         }
     }
-
+ 
     @GetMapping("/appointment/{appointmentId}")
     public ResponseEntity<?> getBillsByAppointment(@PathVariable int appointmentId) {
         try {
@@ -107,7 +107,7 @@ public class BillingController {
                     .body("Error fetching bills by appointment: " + e.getMessage());
         }
     }
-
+ 
     @GetMapping("/status/{status}")
     public ResponseEntity<?> getBillsByStatus(@PathVariable String status) {
         try {
@@ -118,3 +118,4 @@ public class BillingController {
         }
     }
 }
+ 
