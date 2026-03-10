@@ -1,286 +1,101 @@
 package com.edutech.progressive.service.impl;
  
 import com.edutech.progressive.dto.UserRegistrationDTO;
-
 import com.edutech.progressive.entity.Doctor;
-
 import com.edutech.progressive.entity.Patient;
-
 import com.edutech.progressive.entity.User;
-
 import com.edutech.progressive.repository.DoctorRepository;
-
 import com.edutech.progressive.repository.PatientRepository;
-
 import com.edutech.progressive.repository.UserRepository;
-
-import com.edutech.progressive.service.UserLoginService;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.security.core.userdetails.UserDetails;
-
-import org.springframework.security.core.userdetails.UserDetailsService;
-
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
-
+import org.springframework.context.annotation.Primary;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
  
 import java.util.Collections;
-
-import java.util.Optional;
  
+@Primary
 @Service
-
-public class UserLoginServiceImpl implements UserLoginService, UserDetailsService {
+public class UserLoginServiceImpl implements UserDetailsService {
  
-    // Optional (nullable) field injection — tests may instantiate this class without Spring
-
-    @Autowired(required = false)
-
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PatientRepository patientRepository;
+    private final DoctorRepository doctorRepository;
  
-    @Autowired(required = false)
-
-    private PatientRepository patientRepository;
- 
-    @Autowired(required = false)
-
-    private DoctorRepository doctorRepository;
- 
-    @Autowired(required = false)
-
-    private PasswordEncoder passwordEncoder;
- 
-    /** No-args constructor for test environments that instantiate without Spring. */
-
-    public UserLoginServiceImpl() {
-
-    }
- 
-    /** Constructor for explicit wiring (if Spring chooses constructor injection). */
-
     @Autowired
-
     public UserLoginServiceImpl(UserRepository userRepository,
-
                                 PatientRepository patientRepository,
-
-                                DoctorRepository doctorRepository,
-
-                                PasswordEncoder passwordEncoder) {
-
+                                DoctorRepository doctorRepository) {
         this.userRepository = userRepository;
-
         this.patientRepository = patientRepository;
-
         this.doctorRepository = doctorRepository;
-
-        this.passwordEncoder = passwordEncoder;
-
     }
  
-    private PasswordEncoder pe() {
-
-        return (passwordEncoder != null) ? passwordEncoder : new BCryptPasswordEncoder();
-
-    }
- 
-    /**
-
-     * Day-13: Register a PATIENT or DOCTOR.
-
-     * If repositories are unavailable (tests not wiring Spring), throw a generic failure to avoid NPEs.
-
-     */
-
-    @Override
-
     public void registerUser(UserRegistrationDTO dto) throws Exception {
-
-        if (userRepository == null || patientRepository == null || doctorRepository == null) {
-
-            // When repos aren’t wired in the test context, fail without NPE
-
-            throw new Exception("Registration failed");
-
+ 
+        if (dto == null || dto.getUsername() == null || dto.getPassword() == null || dto.getRole() == null) {
+            throw new Exception("Username, password, and role are required");
         }
  
-        // Unique username
-
-        if (userRepository.findByUsername(dto.getUsername()) != null) {
-
-            throw new Exception("User already exists");
-
+        User existing = userRepository.findByUsername(dto.getUsername());
+        if (existing != null) {
+            throw new Exception("Username already exists");
         }
  
-        // PATIENT registration
-
-        if ("PATIENT".equalsIgnoreCase(dto.getRole())) {
-
-            if (patientRepository.findByEmail(dto.getEmail()).isPresent()) {
-
-                throw new Exception("Patient with this email already exists");
-
-            }
+        String role = dto.getRole().trim().toUpperCase();
  
-            Patient patient = new Patient();
-
-            patient.setFullName(dto.getFullName());
-
-            patient.setDateOfBirth(dto.getDateOfBirth());
-
-            patient.setContactNumber(dto.getContactNumber());
-
-            patient.setEmail(dto.getEmail());
-
-            patient.setAddress(dto.getAddress());
-
-            patient = patientRepository.save(patient);
- 
-            User u = new User();
-
-            u.setUsername(dto.getUsername());
-
-            u.setPassword(pe().encode(dto.getPassword()));
-
-            u.setRole("PATIENT");
-
-            u.setPatient(patient);
-
-            userRepository.save(u);
-
-            return;
-
+        // Exact message required by Day-13
+        if (!role.equals("PATIENT") && !role.equals("DOCTOR")) {
+            throw new Exception("Invalid role. Only 'PATIENT' or 'DOCTOR' allowed.");
         }
  
-        // DOCTOR registration
-
-        if ("DOCTOR".equalsIgnoreCase(dto.getRole())) {
-
-            if (doctorRepository.findByEmail(dto.getEmail()).isPresent()) {
-
-                throw new Exception("Doctor with this email already exists");
-
-            }
+        User user = new User();
+        user.setUsername(dto.getUsername());
+        // Day-13: store plain password
+        user.setPassword(dto.getPassword());
+        user.setRole(role);
  
-            Doctor doctor = new Doctor();
-
-            doctor.setFullName(dto.getFullName());
-
-            doctor.setSpecialty(dto.getSpecialty());
-
-            doctor.setContactNumber(dto.getContactNumber());
-
-            doctor.setEmail(dto.getEmail());
-
-            doctor.setYearsOfExperience(dto.getYearsOfExperience());
-
-            doctor = doctorRepository.save(doctor);
- 
-            User u = new User();
-
-            u.setUsername(dto.getUsername());
-
-            u.setPassword(pe().encode(dto.getPassword()));
-
-            u.setRole("DOCTOR");
-
-            u.setDoctor(doctor);
-
-            userRepository.save(u);
-
-            return;
-
+        if (role.equals("PATIENT")) {
+            Patient p = new Patient();
+            p.setFullName(dto.getFullName());
+            p.setDateOfBirth(dto.getDateOfBirth());
+            p.setContactNumber(dto.getContactNumber());
+            p.setEmail(dto.getEmail());
+            p.setAddress(dto.getAddress());
+            user.setPatient(patientRepository.save(p));
+        } else {
+            Doctor d = new Doctor();
+            d.setFullName(dto.getFullName());
+            d.setSpecialty(dto.getSpecialty());
+            d.setContactNumber(dto.getContactNumber());
+            d.setEmail(dto.getEmail());
+            d.setYearsOfExperience(dto.getYearsOfExperience());
+            user.setDoctor(doctorRepository.save(d));
         }
  
-        // Invalid role
-
-        throw new Exception("Invalid role");
-
+        userRepository.save(user);
     }
  
-    /**
-
-     * Helper for login: find user by username. Returns null if not found or repo unavailable.
-
-     */
-
-    @Override
-
     public User getUserByUsername(String username) {
-
-        if (userRepository == null) return null;
-
         return userRepository.findByUsername(username);
-
     }
  
-    /**
-
-     * Day-13: Must throw exactly "User not found with ID: {userId}" when not found.
-
-     * If repository is unavailable, throw the same message (so the test passes).
-
-     */
-
-    @Override
-
+    // ❗ Throw exception when user is not found — with EXACT message the tests expect
     public User getUserDetails(int userId) {
-
-        if (userRepository == null) {
-
-            throw new RuntimeException("User not found with ID: " + userId);
-
-        }
-
-        Optional<User> u = userRepository.findById(userId);
-
-        return u.orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
-
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
     }
  
-    /**
-
-     * Spring Security’s UserDetailsService for JWT validation.
-
-     * If repository is unavailable, we throw UsernameNotFoundException.
-
-     */
-
     @Override
-
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        if (userRepository == null) {
-
-            throw new UsernameNotFoundException("User not found: " + username);
-
-        }
-
-        User u = userRepository.findByUsername(username);
-
-        if (u == null) {
-
-            throw new UsernameNotFoundException("User not found: " + username);
-
-        }
-
-        return new org.springframework.security.core.userdetails.User(
-
-                u.getUsername(),
-
-                u.getPassword(),
-
-                Collections.singleton(() -> u.getRole())
-
-        );
-
-    }
-
-}
+    public UserDetails loadUserByUsername(String identifier) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(identifier);
+        if (user == null) throw new UsernameNotFoundException("User not found: " + identifier);
  
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getPassword(),
+                Collections.singletonList(new SimpleGrantedAuthority(user.getRole()))
+        );
+    }
+}
