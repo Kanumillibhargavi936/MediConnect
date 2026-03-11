@@ -1,0 +1,17 @@
+<div class="card shadow-sm">
+<div class="card-body">
+<h4 class="card-title mb-3">Patient Details</h4>
+ 
+    <!-- Render EXACT key labels the tests look for -->
+<div>patientId: {{ patient?.patientId }}</div>
+<div>fullName: {{ patient?.fullName }}</div>
+<div>dateOfBirth: {{ patient?.dateOfBirth | date:'yyyy-MM-dd' }}</div>
+<div>contactNumber: {{ patient?.contactNumber }}</div>
+<div>email: {{ patient?.email }}</div>
+<div>address: {{ patient?.address }}</div>
+ 
+    <button class="btn btn-outline-primary mt-3" (click)="logPatientAttributes()">
+      Log Patient Attributes
+</button>
+</div>
+</div>

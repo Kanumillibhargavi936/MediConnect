@@ -1,0 +1,19 @@
+ 
+<div class="card shadow-sm">
+<div class="card-body">
+<h4 class="card-title mb-3">Doctor Details</h4>
+ 
+    <!-- Render EXACT key labels the tests look for -->
+<div>doctorId: {{ doctor?.doctorId }}</div>
+<div>fullName: {{ doctor?.fullName }}</div>
+<div>specialty: {{ doctor?.specialty }}</div>
+<div>contactNumber: {{ doctor?.contactNumber }}</div>
+<div>email: {{ doctor?.email }}</div>
+<div>yearsOfExperience: {{ doctor?.yearsOfExperience }}</div>
+ 
+    <button class="btn btn-outline-success mt-3" (click)="logDoctorAttributes()">
+      Log Doctor Attributes
+</button>
+</div>
+</div>
+ 
