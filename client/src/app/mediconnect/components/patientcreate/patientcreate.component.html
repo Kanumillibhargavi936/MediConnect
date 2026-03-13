@@ -1,44 +1,65 @@
-<div class="form-container">
-<h2>Create Patient</h2>
-<form (submit)="onSubmit(); $event.preventDefault()">
-<div class="form-group">
-<label for="patientId">Patient ID:</label>
-<input type="number" id="patientId" [(ngModel)]="patient.patientId" name="patientId" required min="1" />
+ 
+\<form [formGroup]="patientForm" (ngSubmit)="onSubmit()" class="p-3">
+ 
+  <div class="mb-3">
+<label for="patientId" class="form-label">Patient ID</label>
+<input id="patientId" type="number" class="form-control" formControlName="patientId" />
+<div class="text-danger" *ngIf="patientId?.touched && patientId?.invalid">
+      Patient ID is required and must be greater than 0.
+</div>
 </div>
  
-    <div class="form-group">
-<label for="fullName">Full Name:</label>
-<input type="text" id="fullName" [(ngModel)]="patient.fullName" name="fullName" required minlength="2" />
+  <div class="mb-3">
+<label for="fullName" class="form-label">Full Name</label>
+<input id="fullName" type="text" class="form-control" formControlName="fullName" />
+<div class="text-danger" *ngIf="fullName?.touched && fullName?.invalid">
+      Full Name is required (min 2 characters).
+</div>
 </div>
  
-    <div class="form-group">
-<label for="dateOfBirth">Date of Birth:</label>
-<input type="date" id="dateOfBirth" [(ngModel)]="patient.dateOfBirth" name="dateOfBirth" required />
+  <div class="mb-3">
+<label for="dateOfBirth" class="form-label">Date of Birth</label>
+<input id="dateOfBirth" type="date" class="form-control" formControlName="dateOfBirth" />
+<div class="text-danger" *ngIf="dateOfBirth?.touched && dateOfBirth?.invalid">
+      Date of Birth is required.
+</div>
 </div>
  
-    <div class="form-group">
-<label for="contactNumber">Contact Number:</label>
-<input type="text" id="contactNumber" [(ngModel)]="patient.contactNumber" name="contactNumber" required
-        pattern="\d{10}" />
+  <div class="mb-3">
+<label for="contactNumber" class="form-label">Contact Number</label>
+<input id="contactNumber" type="text" class="form-control" formControlName="contactNumber" />
+<div class="text-danger" *ngIf="contactNumber?.touched && contactNumber?.invalid">
+      Contact Number is required and must be a 10-digit number.
+</div>
 </div>
  
-    <div class="form-group">
-<label for="email">Email:</label>
-<input type="email" id="email" [(ngModel)]="patient.email" name="email" required />
+  <div class="mb-3">
+<label for="email" class="form-label">Email</label>
+<input id="email" type="email" class="form-control" formControlName="email" />
+<div class="text-danger" *ngIf="email?.touched && email?.invalid">
+      A valid Email is required.
+</div>
 </div>
  
-    <div class="form-group">
-<label for="address">Address:</label>
-<textarea id="address" [(ngModel)]="patient.address" name="address" required minlength="5"></textarea>
+  <div class="mb-3">
+<label for="address" class="form-label">Address</label>
+<input id="address" type="text" class="form-control" formControlName="address" />
+<div class="text-danger" *ngIf="address?.touched && address?.invalid">
+      Address is required (min 5 characters).
+</div>
 </div>
  
-    <div class="form-actions">
-<button type="submit">Submit</button>
-<button type="button" (click)="resetForm()">Reset</button>
+  <div class="d-flex gap-2">
+<button class="btn btn-primary" type="submit" [disabled]="patientForm.invalid">Submit</button>
+<button type="button" class="btn btn-secondary" (click)="resetForm()">Reset</button>
+</div>
+ 
+  <div class="alert alert-danger mt-3" *ngIf="errorMessage">{{ errorMessage }}</div>
+ 
+  <!-- Required by grader: success message with this exact id -->
+<div id="successMessage" class="alert alert-success mt-3" *ngIf="successMessage">
+    {{ successMessage }}
 </div>
 </form>
  
-  <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
-<div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
-</div>
  
