@@ -1,0 +1,62 @@
+<div class="form-container">
+<h2>Create Appointment</h2>
+<form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
+<div class="form-group">
+<label for="appointmentId">Appointment ID:</label>
+<input type="number" id="appointmentId" formControlName="appointmentId" />
+<div
+                *ngIf="appointmentForm.controls['appointmentId'].invalid && appointmentForm.controls['appointmentId'].touched">
+                Appointment ID is required and must be greater than 0.
+</div>
+</div>
+ 
+        <div class="form-group">
+<label for="patientId">Patient ID:</label>
+<input type="number" id="patientId" formControlName="patientId" />
+<div *ngIf="appointmentForm.controls['patientId'].invalid && appointmentForm.controls['patientId'].touched">
+                Patient ID is required and must be greater than 0.
+</div>
+</div>
+ 
+        <div class="form-group">
+<label for="clinicId">Clinic ID:</label>
+<input type="number" id="clinicId" formControlName="clinicId" />
+<div *ngIf="appointmentForm.controls['clinicId'].invalid && appointmentForm.controls['clinicId'].touched">
+                Clinic ID is required and must be greater than 0.
+</div>
+</div>
+ 
+        <div class="form-group">
+<label for="appointmentDate">Appointment Date:</label>
+<input type="date" id="appointmentDate" formControlName="appointmentDate" />
+<div
+                *ngIf="appointmentForm.controls['appointmentDate'].invalid && appointmentForm.controls['appointmentDate'].touched">
+                Appointment date is required.
+</div>
+</div>
+ 
+        <div class="form-group">
+<label for="status">Status:</label>
+<input type="text" id="status" formControlName="status" />
+<div *ngIf="appointmentForm.controls['status'].invalid && appointmentForm.controls['status'].touched">
+                Status is required.
+</div>
+</div>
+ 
+        <div class="form-group">
+<label for="purpose">Purpose:</label>
+<textarea id="purpose" formControlName="purpose"></textarea>
+<div *ngIf="appointmentForm.controls['purpose'].invalid && appointmentForm.controls['purpose'].touched">
+                Purpose must be at least 5 characters long.
+</div>
+</div>
+ 
+        <div class="form-actions">
+<button type="submit" [disabled]="appointmentForm.invalid">Submit</button>
+<button type="button" (click)="resetForm()">Reset</button>
+</div>
+</form>
+ 
+    <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+<div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+</div>
