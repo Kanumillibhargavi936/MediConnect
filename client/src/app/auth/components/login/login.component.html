@@ -1,0 +1,52 @@
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <!-- Username -->
+  <div class="mb-3">
+    <label for="username" class="form-label">Username</label>
+    <input id="username" type="text" class="form-control" formControlName="username" />
+
+    <div
+      class="text-danger"
+      *ngIf="loginForm.get('username')?.touched && loginForm.get('username')?.invalid"
+    >
+      <div *ngIf="loginForm.get('username')?.errors?.['required']">
+        Username is required
+      </div>
+
+      <div *ngIf="loginForm.get('username')?.errors?.['pattern']">
+        Username must contain only letters and numbers
+      </div>
+    </div>
+  </div>
+
+  <!-- Password -->
+  <div class="mb-3">
+    <label for="password" class="form-label">Password</label>
+    <input id="password" type="password" class="form-control" formControlName="password" />
+
+    <div
+      class="text-danger"
+      *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
+    >
+      <div *ngIf="loginForm.get('password')?.errors?.['required']">
+        Password is required
+      </div>
+
+      <div *ngIf="loginForm.get('password')?.errors?.['minlength']">
+        Password must be at least 8 characters long
+      </div>
+
+      <div *ngIf="loginForm.get('password')?.errors?.['pattern']">
+        Password must contain one uppercase letter and one number
+      </div>
+    </div>
+  </div>
+
+  <!-- Submit Button -->
+  <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid">
+    Login
+  </button>
+
+  <!-- Success & Error Messages -->
+  <div class="text-success mt-2" *ngIf="successMessage">{{ successMessage }}</div>
+  <div class="text-danger mt-2" *ngIf="errorMessage">{{ errorMessage }}</div>
+</form>

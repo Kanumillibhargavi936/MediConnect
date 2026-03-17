@@ -1,0 +1,122 @@
+/* Container Styles */
+.login-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f4f4f4;
+  padding: 20px;
+}
+
+/* Form Styles */
+.login-form {
+  max-width: 400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.login-form h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Align labels and inputs */
+.login-form div {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.login-form label {
+  margin-bottom: 5px;
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+}
+
+.login-form input[type="text"],
+.login-form input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.login-form input[type="text"]:focus,
+.login-form input[type="password"]:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+}
+
+.login-form .error {
+  color: red;
+  margin-top: 5px;
+  font-size: 12px;
+  text-align: left;
+}
+
+/* Submit Button */
+.login-form button[type="submit"] {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #4caf50;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.login-form button[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+/* Success and Error Messages */
+.login-form .success-message,
+.login-form .error-message {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 14px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.login-form .success-message {
+  color: #155724;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+}
+
+.login-form .error-message {
+  color: #721c24;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+}
+
+/* Link Styles */
+a.task-list {
+  display: block;
+  margin-top: 20px;
+  text-align: center;
+  text-decoration: none;
+  color: #007bff;
+  font-size: 14px;
+}
+
+a.task-list:hover {
+  text-decoration: underline;
+}
