@@ -1,57 +1,57 @@
- 
-<form [formGroup]="doctorForm" (ngSubmit)="onSubmit()" class="p-3">
-<div class="mb-3">
-<label for="doctorId" class="form-label">Doctor ID</label>
-<input id="doctorId" type="number" class="form-control" formControlName="doctorId" />
+<div class="form-container">
+    <h2>Create Doctor</h2>
+    <form [formGroup]="doctorForm" (ngSubmit)="onSubmit()">
+
+        <div class="form-group">
+            <label for="fullName">Full Name:</label>
+            <input type="text" id="fullName" formControlName="fullName" />
+            <div class="error" *ngIf="doctorForm.get('fullName')?.invalid && doctorForm.get('fullName')?.touched">
+                Full Name is required and must have at least 2 characters.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="specialty">Specialty:</label>
+            <input type="text" id="specialty" formControlName="specialty" />
+            <div class="error" *ngIf="doctorForm.get('specialty')?.invalid && doctorForm.get('specialty')?.touched">
+                Specialty is required.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="contactNumber">Contact Number:</label>
+            <input type="text" id="contactNumber" formControlName="contactNumber" />
+            <div class="error"
+                *ngIf="doctorForm.get('contactNumber')?.invalid && doctorForm.get('contactNumber')?.touched">
+                Contact Number is required and must be a 10-digit number.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" formControlName="email" />
+            <div class="error" *ngIf="doctorForm.get('email')?.invalid && doctorForm.get('email')?.touched">
+                Email is required and must be valid.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="yearsOfExperience">Years of Experience:</label>
+            <input type="number" id="yearsOfExperience" formControlName="yearsOfExperience" />
+            <div class="error"
+                *ngIf="doctorForm.get('yearsOfExperience')?.invalid && doctorForm.get('yearsOfExperience')?.touched">
+                Years of Experience is required and must be greater than 0.
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit">Submit</button>
+        </div>
+        <div class="form-footer">
+            <a routerLink="/mediconnect" class="link">Dashboard</a>
+        </div>
+    </form>
+
+    <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
 </div>
- 
-  <div class="mb-3">
-<label for="fullName" class="form-label">Full Name</label>
-<input id="fullName" type="text" class="form-control" formControlName="fullName" />
-<div class="text-danger" *ngIf="fullName?.touched && fullName?.invalid">
-      Full Name is required (min 2 characters).
-</div>
-</div>
- 
-  <div class="mb-3">
-<label for="specialty" class="form-label">Specialty</label>
-<input id="specialty" type="text" class="form-control" formControlName="specialty" />
-<div class="text-danger" *ngIf="specialty?.touched && specialty?.invalid">
-      Specialty is required.
-</div>
-</div>
- 
-  <div class="mb-3">
-<label for="contactNumber" class="form-label">Contact Number</label>
-<input id="contactNumber" type="text" class="form-control" formControlName="contactNumber" />
-<div class="text-danger" *ngIf="contactNumber?.touched && contactNumber?.invalid">
-      Contact Number is required and must be a 10-digit number.
-</div>
-</div>
- 
-  <div class="mb-3">
-<label for="email" class="form-label">Email</label>
-<input id="email" type="email" class="form-control" formControlName="email" />
-<div class="text-danger" *ngIf="email?.touched && email?.invalid">
-      A valid Email is required.
-</div>
-</div>
- 
-  <div class="mb-3">
-<label for="yearsOfExperience" class="form-label">Years of Experience</label>
-<input id="yearsOfExperience" type="number" class="form-control" formControlName="yearsOfExperience" />
-<div class="text-danger" *ngIf="yearsOfExperience?.touched && yearsOfExperience?.invalid">
-      Years of Experience is required and must be greater than 0.
-</div>
-</div>
- 
-  <div class="d-flex gap-2">
-<button class="btn btn-primary" type="submit">Submit</button>
-<button type="button" class="btn btn-secondary" (click)="resetForm()">Reset</button>
-</div>
- 
-  <div class="alert alert-danger mt-3" *ngIf="errorMessage">{{ errorMessage }}</div>
- 
-  <!-- No leading/trailing whitespace inside the element -->
-<div id="successMessage" class="alert alert-success mt-3 success-message" *ngIf="successMessage">{{ successMessage }}</div>
-</form>

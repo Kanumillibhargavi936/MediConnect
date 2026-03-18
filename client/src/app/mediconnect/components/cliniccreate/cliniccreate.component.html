@@ -1,48 +1,60 @@
-<form [formGroup]="clinicForm" (ngSubmit)="onSubmit()" class="p-3">
-<div class="mb-3">
-<label for="clinicId" class="form-label">Clinic ID</label>
-<input id="clinicId" type="number" class="form-control" formControlName="clinicId" />
+<div class="form-container">
+    <h2>Create Clinic</h2>
+    <form [formGroup]="clinicForm" (ngSubmit)="onSubmit()">
+        <!-- Doctor Name Field -->
+        <div class="form-group">
+            <label for="doctor">Doctor Name:</label>
+            <input type="text" id="doctor" formControlName="doctor" [readonly]="true" class="readonly-input" />
+        </div>
+
+        <!-- Clinic Name Field -->
+        <div class="form-group">
+            <label for="clinicName">Clinic Name:</label>
+            <input type="text" id="clinicName" formControlName="clinicName" />
+            <div class="error" *ngIf="clinicForm.get('clinicName')?.invalid && clinicForm.get('clinicName')?.touched">
+                Clinic Name is required and must have at least 2 characters.
+            </div>
+        </div>
+
+        <!-- Location Field -->
+        <div class="form-group">
+            <label for="location">Location:</label>
+            <input type="text" id="location" formControlName="location" />
+            <div class="error" *ngIf="clinicForm.get('location')?.invalid && clinicForm.get('location')?.touched">
+                Location is required.
+            </div>
+        </div>
+
+        <!-- Contact Number Field -->
+        <div class="form-group">
+            <label for="contactNumber">Contact Number:</label>
+            <input type="text" id="contactNumber" formControlName="contactNumber" />
+            <div class="error"
+                *ngIf="clinicForm.get('contactNumber')?.invalid && clinicForm.get('contactNumber')?.touched">
+                Contact Number is required and must be a 10-digit number.
+            </div>
+        </div>
+
+        <!-- Established Year Field -->
+        <div class="form-group">
+            <label for="establishedYear">Established Year:</label>
+            <input type="number" id="establishedYear" formControlName="establishedYear" />
+            <div class="error"
+                *ngIf="clinicForm.get('establishedYear')?.invalid && clinicForm.get('establishedYear')?.touched">
+                Established Year is required and must be a valid year.
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-actions">
+            <button type="submit" [disabled]="clinicForm.invalid">Submit</button>
+        </div>
+        <div class="form-footer">
+            <a routerLink="/mediconnect" class="link">Dashboard</a>
+        </div>
+    </form>
+
+    <!-- Success/Error Messages -->
+    <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
 </div>
- 
-  <div class="mb-3">
-<label for="clinicName" class="form-label">Clinic Name</label>
-<input id="clinicName" type="text" class="form-control" formControlName="clinicName" />
-<div class="text-danger" *ngIf="clinicName?.touched && clinicName?.invalid">
-      Clinic Name is required (min 2 characters).
-</div>
-</div>
- 
-  <div class="mb-3">
-<label for="location" class="form-label">Location</label>
-<input id="location" type="text" class="form-control" formControlName="location" />
-<div class="text-danger" *ngIf="location?.touched && location?.invalid">
-      Location is required.
-</div>
-</div>
- 
-  <div class="mb-3">
-<label for="contactNumber" class="form-label">Contact Number</label>
-<input id="contactNumber" type="text" class="form-control" formControlName="contactNumber" />
-<div class="text-danger" *ngIf="contactNumber?.touched && contactNumber?.invalid">
-      Contact Number is required and must be a 10-digit number.
-</div>
-</div>
- 
-  <div class="mb-3">
-<label for="establishedYear" class="form-label">Established Year</label>
-<input id="establishedYear" type="text" class="form-control" formControlName="establishedYear" />
-<div class="text-danger" *ngIf="establishedYear?.touched && establishedYear?.invalid">
-      Established Year is required and must be a valid year (1900–2099).
-</div>
-</div>
- 
-  <div class="d-flex gap-2">
-<button class="btn btn-primary" type="submit">Create Clinic</button>
-<button type="button" class="btn btn-secondary" (click)="resetForm()">Reset</button>
-</div>
- 
-  <div class="alert alert-danger mt-3" *ngIf="errorMessage">{{ errorMessage }}</div>
- 
-  <!-- No leading/trailing whitespace inside the element -->
-<div id="successMessage" class="alert alert-success mt-3 success-message" *ngIf="successMessage">{{ successMessage }}</div>
-</form>

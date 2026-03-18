@@ -1,0 +1,134 @@
+.dashboard-container {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  h1 {
+    text-align: center;
+    font-size: 2.4rem;
+    color: #333;
+    margin-bottom: 20px;
+  }
+
+  .doctor-details,
+  .clinic-section,
+  .appointments-section,
+  .patient-details,
+  .doctor-section,
+  .patients-section {
+    margin-bottom: 30px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+
+    h2 {
+      font-size: 1.8rem;
+      color: #555;
+      margin-bottom: 15px;
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: #666;
+      margin-bottom: 8px;
+
+      strong {
+        color: #333;
+      }
+    }
+
+  }
+
+  .clinics-table,
+  .appointments-table,
+  .patients-table,
+  .doctors-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+
+    th,
+    td {
+      padding: 12px 15px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #4caf50;
+      color: white;
+      font-weight: bold;
+    }
+
+    td {
+      font-size: 1rem;
+      color: #333;
+    }
+
+    tr {
+      &:hover {
+        background-color: #f1f1f1;
+      }
+
+      &.selected {
+        background-color: #e0f7fa;
+        font-weight: bold;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .empty-list {
+    padding: 15px;
+    background-color: #ffe6e6;
+    border: 1px solid #ffcccc;
+    border-radius: 8px;
+    text-align: center;
+
+    p {
+      font-size: 1.2rem;
+      color: #d9534f;
+      margin: 0;
+    }
+  }
+
+  .btn-edit,
+  .btn-delete {
+    margin: 5px;
+    padding: 10px 15px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .btn-edit {
+    background-color: #007bff;
+    color: white;
+  }
+
+  .btn-delete {
+    background-color: #dc3545;
+    color: white;
+  }
+
+  .btn-save {
+    background-color: #28a745;
+    color: white;
+  }
+
+  .btn-cancel {
+    background-color: #6c757d;
+    color: white;
+  }
+
+  button.btn-delete:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+  }
+}

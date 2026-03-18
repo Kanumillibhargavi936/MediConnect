@@ -1,12 +1,11 @@
-
 export class Doctor {
- doctorId: number;
+  doctorId: number;
   fullName: string;
   contactNumber: string;
   email: string;
   specialty: string;
   yearsOfExperience: number;
- 
+
   constructor(
     doctorId: number,
     fullName: string,
@@ -22,13 +21,7 @@ export class Doctor {
     this.specialty = specialty;
     this.yearsOfExperience = yearsOfExperience;
   }
- 
-  logAttributes(): void {
-    console.log('doctorId:', this.doctorId);
-    console.log('fullName:', this.fullName);
-    console.log('contactNumber:', this.contactNumber);
-    console.log('email:', this.email);
-    console.log('specialty:', this.specialty);
-    console.log('yearsOfExperience:', this.yearsOfExperience);
-  }
+
+  logAttributes?(): void ;
+
 }

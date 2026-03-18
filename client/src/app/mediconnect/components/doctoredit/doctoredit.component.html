@@ -1,0 +1,59 @@
+<div class="container py-3">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h4 class="mb-3">Edit Doctor</h4>
+
+      <form [formGroup]="doctorForm" (ngSubmit)="onSubmit()">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Full Name</label>
+            <input class="form-control" formControlName="fullName" />
+            <div class="text-danger" *ngIf="doctorForm.get('fullName')?.touched && doctorForm.get('fullName')?.invalid">
+              Full name is required (min 2 characters).
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Specialty</label>
+            <input class="form-control" formControlName="specialty" />
+            <div class="text-danger" *ngIf="doctorForm.get('specialty')?.touched && doctorForm.get('specialty')?.invalid">
+              Specialty is required.
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Contact Number</label>
+            <input class="form-control" formControlName="contactNumber" />
+            <div class="text-danger" *ngIf="doctorForm.get('contactNumber')?.touched && doctorForm.get('contactNumber')?.invalid">
+              Enter a valid 10-digit number.
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" formControlName="email" />
+            <div class="text-danger" *ngIf="doctorForm.get('email')?.touched && doctorForm.get('email')?.invalid">
+              Enter a valid email.
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Years Of Experience</label>
+            <input type="number" class="form-control" formControlName="yearsOfExperience" />
+            <div class="text-danger" *ngIf="doctorForm.get('yearsOfExperience')?.touched && doctorForm.get('yearsOfExperience')?.invalid">
+              Enter a non-negative number.
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-3">
+          <button type="submit" class="btn btn-primary" [disabled]="doctorForm.invalid">Update</button>
+        </div>
+      </form>
+
+      <div class="alert alert-success mt-3" *ngIf="successMessage">{{ successMessage }}</div>
+      <div class="alert alert-danger mt-3" *ngIf="errorMessage">{{ errorMessage }}</div>
+    </div>
+  </div>
+</div>
+``

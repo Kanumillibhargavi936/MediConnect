@@ -1,0 +1,203 @@
+<app-navbar></app-navbar>
+<div *ngIf="role === 'DOCTOR'" class="dashboard-container">
+    <h1>Doctor Dashboard</h1>
+
+    <!-- Doctor Details -->
+    <div class="doctor-details">
+        <h2>Doctor Details</h2>
+        <p><strong>Name:</strong> {{ doctorDetails?.fullName }}</p>
+        <p><strong>Email:</strong> {{ doctorDetails?.email }}</p>
+        <p><strong>Specialty:</strong> {{ doctorDetails?.specialty }}</p>
+        <p><strong>Years of Experience:</strong> {{ doctorDetails?.yearsOfExperience }}</p>
+        <button (click)="navigateToEditDoctor()" class="btn-edit">Edit</button>
+        <button (click)="deleteDoctor()" class="btn-delete">Delete</button>
+    </div>
+
+    <div class="clinic-section">
+        <h2>Clinics</h2>
+        <div *ngIf="clinics.length === 0" class="empty-list">
+            <p>No clinics.</p>
+        </div>
+        <div *ngIf="clinics.length > 0">
+            <table class="clinics-table">
+                <thead>
+                    <tr>
+                        <th>Clinic Id</th>
+                        <th>Clinic Name</th>
+                        <th>Doctor Name</th>
+                        <th>Location</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let clinic of clinics" (click)="onClinicSelect(clinic)"
+                        [class.selected]="clinic.clinicId === selectedClinicId">
+                        <td>{{ clinic.clinicId }}</td>
+                        <td>{{ clinic.clinicName }}</td>
+                        <td>{{ clinic.doctor.fullName }}</td>
+                        <td>{{ clinic.location }}</td>
+                        <td>
+                            <button (click)="navigateToEditClinic(clinic.clinicId)" class="btn-edit">Edit</button>
+                            <button (click)="deleteClinic(clinic.clinicId)" class="btn-delete">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Appointments -->
+    <div class="appointments-section">
+        <h2>Appointments in Selected Clinic - {{ selectedClinicId }} </h2>
+        <div *ngIf="selectClinicAppointments.length === 0" class="empty-list">
+            <p>No appointments available.</p>
+        </div>
+        <div *ngIf="selectClinicAppointments.length > 0">
+            <table class="appointments-table">
+                <thead>
+                    <tr>
+                        <th>Clinic Name</th>
+                        <th>Patient Name</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let appointment of selectClinicAppointments">
+                        <td>{{ appointment.clinic.clinicName }}</td>
+                        <td>{{ appointment.patient.fullName }}</td>
+                        <td>{{ appointment.appointmentDate | date }}</td>
+                        <td>{{ appointment.status }}</td>
+                        <td>
+                            <button (click)="cancelAppointment(appointment)" class="btn-delete" [disabled]="appointment.status === 'Cancel'">Cancel</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Patients -->
+    <div class="patients-section">
+        <h2>Patients </h2>
+        <div *ngIf="patients.length === 0" class="empty-list">
+            <p>No patients available.</p>
+        </div>
+        <div *ngIf="patients.length > 0">
+            <table class="patients-table">
+                <thead>
+                    <tr>
+                        <th>Patient Id</th>
+                        <th>Patient Name</th>
+                        <th>Date of Birth</th>
+                        <th>Contact Number</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let patient of patients">
+                        <td>{{ patient.patientId }}</td>
+                        <td>{{ patient.fullName }}</td>
+                        <td>{{ patient.dateOfBirth | date }}</td>
+                        <td>{{ patient.contactNumber }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="role === 'PATIENT'" class="dashboard-container">
+    <h1>Patient Dashboard</h1>
+
+    <div class="patient-details">
+        <h2>Patient Details</h2>
+        <p><strong>Patient ID:</strong> {{ patientDetails?.patientId }}</p>
+        <p><strong>Name:</strong> {{ patientDetails?.fullName }}</p>
+        <p><strong>Email:</strong> {{ patientDetails?.email }}</p>
+        <p><strong>Date of Birth:</strong> {{ patientDetails?.dateOfBirth | date }}</p>
+        <p><strong>Address:</strong> {{ patientDetails?.address }}</p>
+        <p><strong>Contact Number:</strong> {{ patientDetails?.contactNumber }}</p>
+        <button (click)="navigateToEditPatient()" class="btn-edit">Edit</button>
+        <button (click)="deletePatient()" class="btn-delete">Delete</button>
+    </div>
+
+    <div class="appointments-section">
+        <h2>Appointments </h2>
+        <div *ngIf="appointments.length === 0" class="empty-list">
+            <p>No appointments available.</p>
+        </div>
+        <div *ngIf="appointments.length > 0">
+            <table class="appointments-table">
+                <thead>
+                    <tr>
+                        <th>Clinic Name</th>
+                        <th>Patient Name</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let appointment of appointments">
+                        <td>{{ appointment.clinic.clinicName }}</td>
+                        <td>{{ appointment.patient.fullName }}</td>
+                        <td>{{ appointment.appointmentDate | date }}</td>
+                        <td>{{ appointment.status }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="clinic-section">
+        <h2>Clinics</h2>
+        <div *ngIf="clinics.length === 0" class="empty-list">
+            <p>No clinics.</p>
+        </div>
+        <div *ngIf="clinics.length > 0">
+            <table class="clinics-table">
+                <thead>
+                    <tr>
+                        <th>Clinic Id</th>
+                        <th>Clinic Name</th>
+                        <th>Doctor Name</th>
+                        <th>Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let clinic of clinics">
+                        <td>{{ clinic.clinicId }}</td>
+                        <td>{{ clinic.clinicName }}</td>
+                        <td>{{ clinic.doctor.fullName }}</td>
+                        <td>{{ clinic.location }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="doctor-section">
+        <h2>Doctors </h2>
+        <div *ngIf="doctors.length === 0" class="empty-list">
+            <p>No doctors available.</p>
+        </div>
+        <div *ngIf="doctors.length > 0">
+            <table class="doctors-table">
+                <thead>
+                    <tr>
+                        <th>Doctor Name</th>
+                        <th>Speciality</th>
+                        <th>Years of Experience</th>
+                        <th>Contact Number</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let doctor of doctors">
+                        <td>{{ doctor.fullName }}</td>
+                        <td>{{ doctor.specialty }}</td>
+                        <td>{{ doctor.yearsOfExperience }}</td>
+                        <td>{{ doctor.contactNumber }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
