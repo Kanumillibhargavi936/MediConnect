@@ -1,42 +1,23 @@
- 
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Doctor } from '../../models/Doctor';
- 
+import { Doctor } from 'src/app/mediconnect/models/Doctor';
+
 @Component({
-  selector: 'app-doctorsample',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './doctorsample.component.html',
-  styleUrls: ['./doctorsample.component.scss']
+    selector: 'app-doctorsample',
+    standalone: true,
+    templateUrl: './doctorsample.component.html',
+    styleUrls: ['./doctorsample.component.scss']
 })
 export class DoctorSampleComponent {
- 
-  // Use EXACT data the test expects
-  doctor: Doctor = new Doctor(
-    1,                        // doctorId
-    'Dr. Jane Smith',         // fullName
-    '9876543210',             // contactNumber
-    'jane@example.com',       // email
-    'Cardiology',             // specialty
-    15                        // yearsOfExperience
-  );
- 
-  // Explicitly call model's logAttributes() (as per Day-17)
-  logDoctorAttributes(): void {
-    const anyDoctor: any = this.doctor as any;
-    if (anyDoctor && typeof anyDoctor.logAttributes === 'function') {
-      anyDoctor.logAttributes();
-    } else {
-      console.log('Doctor Details (fallback):', {
-        doctorId: this.doctor.doctorId,
-        fullName: this.doctor.fullName,
-        specialty: this.doctor.specialty,
-        contactNumber: this.doctor.contactNumber,
-        email: this.doctor.email,
-        yearsOfExperience: this.doctor.yearsOfExperience
-      });
+    doctor: Doctor = new Doctor(
+        1,
+        'Dr. Jane Smith',
+        '9876543210',
+        'jane@example.com',
+        'Cardiology',
+        15
+    );
+
+    logDoctorAttributes() {
+        this.doctor.logAttributes();
     }
-  }
 }
- 

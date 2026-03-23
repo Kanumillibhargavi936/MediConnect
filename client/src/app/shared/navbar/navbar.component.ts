@@ -6,9 +6,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavBarComponent implements OnInit {
-  role: string | null = null;
 
+  constructor() { }
+
+  role!:string|null;
   ngOnInit(): void {
-    this.role = localStorage.getItem('role');
+    console.log(localStorage.getItem("role"));
+    this.role=localStorage.getItem("role");
   }
+
 }

@@ -1,16 +1,18 @@
 .dashboard-container {
   max-width: 1200px;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: 24px auto;
+  padding: 32px;
+  background: linear-gradient(135deg, #f7faff 0%, #e6ecf7 100%);
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(40, 60, 120, 0.1);
 
   h1 {
     text-align: center;
-    font-size: 2.4rem;
-    color: #333;
-    margin-bottom: 20px;
+    font-size: 2.3rem;
+    color: #1f3565;
+    margin-bottom: 28px;
+    letter-spacing: 0.8px;
+    font-weight: 600;
   }
 
   .doctor-details,
@@ -19,28 +21,30 @@
   .patient-details,
   .doctor-section,
   .patients-section {
-    margin-bottom: 30px;
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #fff;
+    margin-bottom: 32px;
+    padding: 22px;
+    border: 1px solid #d6def2;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(34, 57, 108, 0.05);
 
     h2 {
-      font-size: 1.8rem;
-      color: #555;
-      margin-bottom: 15px;
+      font-size: 1.4rem;
+      color: #314b86;
+      margin-bottom: 16px;
+      font-weight: 600;
     }
 
     p {
-      font-size: 1.2rem;
-      color: #666;
-      margin-bottom: 8px;
+      font-size: 1.08rem;
+      color: #4a5875;
+      margin-bottom: 10px;
 
       strong {
-        color: #333;
+        color: #1f3565;
+        font-weight: 600;
       }
     }
-
   }
 
   .clinics-table,
@@ -49,86 +53,183 @@
   .doctors-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
+    margin-top: 14px;
+    border-radius: 10px;
+    overflow: hidden;
 
     th,
     td {
-      padding: 12px 15px;
+      padding: 14px 16px;
       text-align: left;
-      border: 1px solid #ddd;
+      border-bottom: 1px solid #e1e7f5;
     }
 
     th {
-      background-color: #4caf50;
-      color: white;
-      font-weight: bold;
+      background: linear-gradient(90deg, #314b86 0%, #3f5fb6 100%);
+      color: #ffffff;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.4px;
     }
 
     td {
-      font-size: 1rem;
-      color: #333;
+      font-size: 0.98rem;
+      color: #22396c;
+      background-color: #ffffff;
     }
 
     tr {
+      transition: background-color 0.2s ease;
+
       &:hover {
-        background-color: #f1f1f1;
+        background-color: #eef3fc;
       }
 
       &.selected {
-        background-color: #e0f7fa;
-        font-weight: bold;
-        cursor: pointer;
+        background-color: #d8ebff;
+        font-weight: 600;
       }
     }
   }
 
   .empty-list {
-    padding: 15px;
-    background-color: #ffe6e6;
-    border: 1px solid #ffcccc;
-    border-radius: 8px;
+    padding: 18px;
+    background-color: #fdf2f8;
+    border: 1px solid #f1cfe3;
+    border-radius: 10px;
     text-align: center;
 
     p {
-      font-size: 1.2rem;
-      color: #d9534f;
+      font-size: 1.1rem;
+      color: #a84273;
       margin: 0;
+      font-weight: 500;
     }
   }
 
   .btn-edit,
-  .btn-delete {
-    margin: 5px;
-    padding: 10px 15px;
-    font-size: 1rem;
+  .btn-delete,
+  .btn-save,
+  .btn-cancel {
+    margin: 6px 4px;
+    padding: 10px 20px;
+    font-size: 0.95rem;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
+    font-weight: 500;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
 
   .btn-edit {
-    background-color: #007bff;
-    color: white;
+    background: linear-gradient(90deg, #23b6e7 0%, #3a8dde 100%);
+    color: #fff;
   }
 
   .btn-delete {
-    background-color: #dc3545;
-    color: white;
+    background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%);
+    color: #fff;
   }
 
   .btn-save {
-    background-color: #28a745;
-    color: white;
+    background: linear-gradient(90deg, #2ecc71 0%, #27ae60 100%);
+    color: #fff;
   }
 
   .btn-cancel {
-    background-color: #6c757d;
-    color: white;
+    background: linear-gradient(90deg, #9e9e9e 0%, #7b7b7b 100%);
+    color: #fff;
+  }
+
+  button:not(:disabled):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
   }
 
   button.btn-delete:disabled {
-    background-color: #ccc;
-    color: #666;
+    background-color: #e6e6e6;
+    color: #9a9a9a;
     cursor: not-allowed;
+    box-shadow: none;
+  }
+}
+
+/* NAVBAR */
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 32px;
+  background: linear-gradient(90deg, #1f3565 0%, #314b86 100%);
+  color: #f9fbff;
+  box-shadow: 0 3px 12px rgba(31, 53, 101, 0.15);
+  border-radius: 0 0 12px 12px;
+}
+
+.navbar-list {
+  list-style: none;
+  display: flex;
+  gap: 24px;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #f9fbff;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.nav-link:hover,
+.nav-link:focus {
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  outline: none;
+}
+
+.nav-link.active {
+  background: linear-gradient(90deg, #2ecc71 0%, #23b6e7 100%);
+  color: #ffffff;
+}
+
+.app-name {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: default;
+}
+
+.logout-container {
+  margin-left: auto;
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 20px;
+  }
+
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 14px 18px;
+  }
+
+  .navbar-list {
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .logout-container {
+    margin-top: 12px;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
   }
 }

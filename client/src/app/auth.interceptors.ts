@@ -15,7 +15,6 @@ export class AuthInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    // Get the token from your authentication service
 
     const token = this.authService.getToken();
 
@@ -23,7 +22,6 @@ export class AuthInterceptor implements HttpInterceptor {
       return next.handle(request);
     }
 
-    // Clone the request and add the Authorization header with the token
     if (token) {
       request = request.clone({
         setHeaders: {
@@ -34,7 +32,7 @@ export class AuthInterceptor implements HttpInterceptor {
       });
     }
 
-    // Pass the modified request to the next interceptor or to the HTTP handler
+    
     return next.handle(request);
   }
 }

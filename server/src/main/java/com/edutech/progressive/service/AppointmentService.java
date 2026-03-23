@@ -5,18 +5,18 @@ import com.edutech.progressive.entity.Appointment;
 import java.util.List;
 
 public interface AppointmentService {
-
     List<Appointment> getAllAppointments();
 
-    Integer createAppointment(Appointment appointment);
+    int createAppointment(Appointment appointment);
 
-    void updateAppointment(Appointment appointment);
+    public void updateAppointment(Appointment appointment);
 
-    Appointment getAppointmentById(int appointmentId);
+    public Appointment getAppointmentById(int appointmentId);
 
-    List<Appointment> getAppointmentsByClinicId(int clinicId);
+    public List<Appointment> getAppointmentByClinic(int clinicId);
 
-    List<Appointment> getAppointmentsByPatientId(int patientId);
+    public List<Appointment> getAppointmentByPatient(int patientId);
 
-    List<Appointment> getAppointmentsByStatus(String status);
+    public List<Appointment> getAppointmentByStatus(String status);
+
 }

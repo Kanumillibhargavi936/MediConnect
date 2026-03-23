@@ -1,98 +1,63 @@
 package com.edutech.progressive.controller;
- 
+
 import com.edutech.progressive.entity.Appointment;
-import com.edutech.progressive.service.AppointmentService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
- 
+
 import java.util.List;
- 
+
+import com.edutech.progressive.service.AppointmentService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
 @RestController
 @RequestMapping("/appointment")
 public class AppointmentController {
- 
-    private final AppointmentService appointmentService;
- 
-    public AppointmentController(AppointmentService appointmentService){
-        this.appointmentService = appointmentService;
-    }
- 
+
+    @Autowired
+    private AppointmentService appointmentService;
+
     @GetMapping
-    public ResponseEntity<?> getAllAppointments() {
-        try {
-            List<Appointment> list = appointmentService.getAllAppointments();
-            return ResponseEntity.ok(list);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error fetching appointments: " + e.getMessage());
-        }
+    public ResponseEntity<List<Appointment>> getAllAppointments() {
+        List<Appointment> appointments = appointmentService.getAllAppointments();
+        return new ResponseEntity<>(appointments, HttpStatus.OK);
     }
- 
-    @PostMapping
-    public ResponseEntity<?> createAppointment(@RequestBody Appointment appointment) {
-        try {
-            Integer id = appointmentService.createAppointment(appointment);
-            Appointment saved = appointmentService.getAppointmentById(id);
-            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error creating appointment: " + e.getMessage());
-        }
-    }
- 
-    @PutMapping("/{appointmentId}")
-    public ResponseEntity<?> updateAppointment(@PathVariable int appointmentId,
-                                               @RequestBody Appointment appointment) {
-        try {
-            appointment.setAppointmentId(appointmentId);
-            appointmentService.updateAppointment(appointment);
-            Appointment updated = appointmentService.getAppointmentById(appointmentId);
-            return ResponseEntity.ok(updated);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error updating appointment: " + e.getMessage());
-        }
-    }
- 
+
     @GetMapping("/{appointmentId}")
-    public ResponseEntity<?> getAppointmentById(@PathVariable int appointmentId) {
-        try {
-            Appointment appt = appointmentService.getAppointmentById(appointmentId);
-            return ResponseEntity.ok(appt);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error fetching appointment: " + e.getMessage());
-        }
+    public ResponseEntity<Appointment> getAppointmentById(@PathVariable Integer appointmentId) {
+        Appointment appointment = appointmentService.getAppointmentById(appointmentId);
+        return new ResponseEntity<>(appointment, HttpStatus.OK);
     }
- 
+
+    @PostMapping
+    public ResponseEntity<Integer> createAppointment(@RequestBody Appointment appointment) {
+        Integer appointmentId = appointmentService.createAppointment(appointment);
+        return new ResponseEntity<>(appointmentId, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{appointmentId}")
+    public ResponseEntity<Void> updateAppointment(@PathVariable Integer appointmentId, @RequestBody Appointment appointment) {
+        appointment.setAppointmentId(appointmentId);
+        appointmentService.updateAppointment(appointment);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @GetMapping("/clinic/{clinicId}")
-    public ResponseEntity<?> getAppointmentsByClinicId(@PathVariable int clinicId) {
-        try {
-            return ResponseEntity.ok(appointmentService.getAppointmentsByClinicId(clinicId));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error fetching appointments by clinic: " + e.getMessage());
-        }
+    public ResponseEntity<List<Appointment>> getAppointmentsByClinic(@PathVariable Integer clinicId) {
+        List<Appointment> appointments = appointmentService.getAppointmentByClinic(clinicId);
+        return new ResponseEntity<>(appointments, HttpStatus.OK);
     }
- 
+
     @GetMapping("/patient/{patientId}")
-    public ResponseEntity<?> getAppointmentsByPatientId(@PathVariable int patientId) {
-        try {
-            return ResponseEntity.ok(appointmentService.getAppointmentsByPatientId(patientId));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error fetching appointments by patient: " + e.getMessage());
-        }
+    public ResponseEntity<List<Appointment>> getAppointmentsByPatient(@PathVariable Integer patientId) {
+        List<Appointment> appointments = appointmentService.getAppointmentByPatient(patientId);
+        return new ResponseEntity<>(appointments, HttpStatus.OK);
     }
- 
+
     @GetMapping("/status/{status}")
-    public ResponseEntity<?> getAppointmentsByStatus(@PathVariable String status) {
-        try {
-            return ResponseEntity.ok(appointmentService.getAppointmentsByStatus(status));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error fetching appointments by status: " + e.getMessage());
-        }
+    public ResponseEntity<List<Appointment>> getAppointmentsByStatus(@PathVariable String status) {
+        List<Appointment> appointments = appointmentService.getAppointmentByStatus(status);
+        return new ResponseEntity<>(appointments, HttpStatus.OK);
     }
 }
+

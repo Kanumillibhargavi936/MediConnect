@@ -1,21 +1,17 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-  <div class="container-fluid">
-    <a class="navbar-brand" routerLink="/mediconnect/dashboard">MediConnect</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbc"
-            aria-controls="navbc" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div id="navbc" class="collapse navbar-collapse">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item" *ngIf="role === 'DOCTOR'">
-          <a class="nav-link" routerLink="/mediconnect/clinic/create">Add Clinic</a>
-        </li>
-        <li class="nav-item" *ngIf="role !== 'DOCTOR'">
-          <a class="nav-link" routerLink="/mediconnect/appointment/create">Book Appointment</a>
-        </li>
-      </ul>
+<nav class="navbar" >
+    <ul class="navbar-list">
+      <li>
+        <a routerLink="/mediconnect" class="nav-link app-name" aria-label="Home">MediConnect</a>
+      </li>
+  
+      <li *ngIf="role === 'DOCTOR'">
+        <a routerLink="/mediconnect/clinic" class="nav-link">Add Clinic</a>
+      </li>
+      <li *ngIf="role !== 'DOCTOR'">
+        <a routerLink="/mediconnect/appointment" class="nav-link">Book Appointment</a>
+      </li>
+    </ul>
+  
       <app-logout></app-logout>
-    </div>
-  </div>
-</nav>
+  </nav>
+  

@@ -55,4 +55,3 @@ export class DoctorCreateComponent implements OnInit {
         console.error('An error occurred:', this.errorMessage);
     }
 }
-

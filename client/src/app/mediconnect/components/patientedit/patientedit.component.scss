@@ -1,0 +1,125 @@
+.form-container {
+  max-width: 600px;
+  margin: 36px auto;
+  padding: 32px 28px 28px 28px;
+  background: #fff;
+  border: 1.5px solid #cdd7ee;
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(40, 60, 120, 0.10);
+
+  h2 {
+    text-align: center;
+    font-size: 2rem;
+    color: #22396c;
+    margin-bottom: 23px;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+
+      label {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #395490;
+        letter-spacing: 0.3px;
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="number"],
+      input[type="date"],
+      input[type="password"],
+      textarea {
+        padding: 12px 14px;
+        font-size: 1rem;
+        border: 1.2px solid #cdd7ee;
+        border-radius: 7px;
+        outline: none;
+        background: #f8fbff;
+        color: #22396c;
+        transition: border-color 0.2s, box-shadow 0.2s;
+
+        &:focus {
+          border-color: #23b6e7;
+          box-shadow: 0 0 7px rgba(35, 182, 231, 0.12);
+        }
+      }
+
+      .error {
+        color: #e74c3c;
+        font-size: 0.93rem;
+        margin-top: 5px;
+        font-weight: 500;
+      }
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: center;
+
+      button[type="submit"] {
+        background: linear-gradient(90deg, #23b6e7 0%, #395490 100%);
+        color: #fff;
+        border: none;
+        border-radius: 7px;
+        padding: 12px 28px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s, box-shadow 0.18s;
+        box-shadow: 0 2px 10px rgba(35, 182, 231, 0.07);
+
+        &:hover,
+        &:focus {
+          background: linear-gradient(90deg, #2ecc71 0%, #23b6e7 100%);
+          outline: none;
+        }
+
+        &:disabled {
+          background: #bfcbe3;
+          color: #f4f4f6;
+          cursor: not-allowed;
+        }
+      }
+    }
+    .form-footer {
+      text-align: center;
+      margin: 20px 0 0 0;
+      font-size: 15px;
+      color: #395490;
+    }
+  }
+
+  .success-message {
+    text-align: center;
+    color: #187d3b;
+    background-color: #d4edda;
+    border: 1.2px solid #c3e6cb;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 20px;
+    border-radius: 7px;
+    padding: 10px;
+  }
+
+  .error-message {
+    text-align: center;
+    color: #c0392b;
+    background-color: #f8d7da;
+    border: 1.2px solid #f5c6cb;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 20px;
+    border-radius: 7px;
+    padding: 10px;
+  }
+}

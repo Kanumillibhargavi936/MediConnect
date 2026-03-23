@@ -1,67 +1,54 @@
-<app-navbar></app-navbar>
+<div class="form-container">
+  <h2>Create Appointment</h2>
+  <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
 
-<div class="container py-3">
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <h4 class="mb-3">Create Appointment</h4>
+      <div class="form-group">
+          <label for="patientId">Patient:</label>
+          <input type="number" id="patientId" formControlName="patientId" />
+      </div>
 
-      <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
-        <div class="row g-3">
-          <div class="col-md-4">
-            <label class="form-label">Patient ID</label>
-            <input class="form-control" formControlName="patientId" readonly>
-          </div>
-
-          <div class="col-md-8">
-            <label class="form-label">Clinic</label>
-            <select class="form-select" formControlName="clinicId">
-              <option [ngValue]="null">-- Select Clinic --</option>
-              <option *ngFor="let c of clinics" [ngValue]="c.clinicId">
-                {{ c.clinicName }} ({{ c.location }})
+      <div class="form-group">
+          <label for="clinic">Clinic:</label>
+          <select formControlName="clinic">
+              <option value="">Select a Clinic</option>
+              <option *ngFor="let clinic of clinics" [ngValue]="clinic">
+                  {{ clinic.clinicName }}
               </option>
-            </select>
-            <div class="text-danger" *ngIf="clinicId?.touched && clinicId?.invalid">
-              Please select a clinic.
-            </div>
-          </div>
+          </select>
+      </div>
 
-          <div class="col-md-4">
-            <label class="form-label">Appointment Date</label>
-            <input type="datetime-local" class="form-control" formControlName="appointmentDate">
-            <div class="text-danger" *ngIf="appointmentDate?.touched && appointmentDate?.invalid">
-              Date/time is required.
-            </div>
+      <div class="form-group">
+          <label for="appointmentDate">Appointment Date:</label>
+          <input type="date" id="appointmentDate" formControlName="appointmentDate" />
+          <div
+              *ngIf="appointmentForm.controls['appointmentDate'].invalid && appointmentForm.controls['appointmentDate'].touched">
+              Appointment date is required.
           </div>
+      </div>
 
-          <div class="col-md-4">
-            <label class="form-label">Status</label>
-            <select class="form-select" formControlName="status">
-              <option value="Scheduled">Scheduled</option>
-              <option value="Completed">Completed</option>
-              <option value="Canceled">Canceled</option>
-            </select>
-            <div class="text-danger" *ngIf="status?.touched && status?.invalid">
+      <div class="form-group">
+          <label for="status">Status:</label>
+          <input type="text" id="status" formControlName="status" />
+          <div *ngIf="appointmentForm.controls['status'].invalid && appointmentForm.controls['status'].touched">
               Status is required.
-            </div>
           </div>
+      </div>
 
-          <div class="col-md-12">
-            <label class="form-label">Purpose</label>
-            <textarea rows="3" class="form-control" formControlName="purpose" placeholder="Purpose"></textarea>
-            <div class="text-danger" *ngIf="purpose?.touched && purpose?.invalid">
-              Purpose is required.
-            </div>
+      <div class="form-group">
+          <label for="purpose">Purpose:</label>
+          <textarea id="purpose" formControlName="purpose"></textarea>
+          <div *ngIf="appointmentForm.controls['purpose'].invalid && appointmentForm.controls['purpose'].touched">
+              Purpose must be at least 5 characters long.
           </div>
-        </div>
+      </div>
 
-        <div class="d-flex gap-2 mt-3">
-          <button type="submit" class="btn btn-primary" [disabled]="appointmentForm.invalid">Submit</button>
-          <a routerLink="/mediconnect/dashboard" class="btn btn-outline-secondary">Dashboard</a>
-        </div>
-      </form>
-
-      <div class="alert alert-success mt-3" *ngIf="successMessage">{{ successMessage }}</div>
-      <div class="alert alert-danger mt-3" *ngIf="errorMessage">{{ errorMessage }}</div>
-    </div>
-  </div>
+      <div class="form-actions">
+          <button type="submit" [disabled]="appointmentForm.invalid">Submit</button>
+      </div>
+      <div class="form-footer">
+          <a routerLink="/mediconnect" class="link">Dashboard</a>
+      </div>
+  </form>
+  <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
 </div>

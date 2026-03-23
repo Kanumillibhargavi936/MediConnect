@@ -1,6 +1,5 @@
- 
 import { Component, OnInit } from '@angular/core';
- 
+
 @Component({
     selector: 'app-doctorarray',
     templateUrl: './doctorarray.component.html',
@@ -9,11 +8,10 @@ import { Component, OnInit } from '@angular/core';
 export class DoctorArrayComponent implements OnInit {
     doctors: any[] = [];
     showDetails: boolean = false;
- 
+
     constructor() { }
- 
+
     ngOnInit(): void {
-        // Sample Doctor Data in JSON Array
         this.doctors = [
             {
                 doctorId: 1,
@@ -41,10 +39,8 @@ export class DoctorArrayComponent implements OnInit {
             }
         ];
     }
- 
+
     toggleDetails(): void {
         this.showDetails = !this.showDetails;
     }
 }
-
- 

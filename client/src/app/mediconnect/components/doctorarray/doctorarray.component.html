@@ -1,18 +1,17 @@
- 
 <div class="doctor-container">
-<h2>Doctor List</h2>
-<button (click)="toggleDetails()">
-        {{ showDetails ? 'Hide Details' : 'Show Details' }}
-</button>
- 
-    <ul>
-<li *ngFor="let doctor of doctors">
-<strong>{{ doctor.fullName }}</strong> - {{ doctor.specialty }}
-<div *ngIf="showDetails" class="doctor-details">
-<p><strong>Contact Number:</strong> {{ doctor.contactNumber }}</p>
-<p><strong>Email:</strong> {{ doctor.email }}</p>
-<p><strong>Years of Experience:</strong> {{ doctor.yearsOfExperience }}</p>
-</div>
-</li>
-</ul>
+  <h2>Doctor List</h2>
+  <button (click)="toggleDetails()">
+      {{ showDetails ? 'Hide Details' : 'Show Details' }}
+  </button>
+
+  <ul>
+      <li *ngFor="let doctor of doctors">
+          <strong>{{ doctor.fullName }}</strong> - {{ doctor.specialty }}
+          <div *ngIf="showDetails" class="doctor-details">
+              <p><strong>Contact Number:</strong> {{ doctor.contactNumber }}</p>
+              <p><strong>Email:</strong> {{ doctor.email }}</p>
+              <p><strong>Years of Experience:</strong> {{ doctor.yearsOfExperience }}</p>
+          </div>
+      </li>
+  </ul>
 </div>

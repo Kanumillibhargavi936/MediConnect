@@ -1,23 +1,26 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-logout',
-  templateUrl: './logout.component.html',
-  styleUrls: ['./logout.component.scss']
+    selector: 'app-logout',
+    templateUrl: './logout.component.html',
+    styleUrls: ['./logout.component.scss']
 })
-export class LogoutComponent {
-  constructor(private router: Router) {}
-
-  logout(): void {
-    try {
-      localStorage.removeItem('token');
-      localStorage.removeItem('role');
-      localStorage.removeItem('user_id');
-      localStorage.removeItem('doctor_id');
-      localStorage.removeItem('patient_id');
-    } finally {
-      this.router.navigateByUrl('/auth');
+export class LogoutComponent{
+    role!: string | null;
+    doctorId!: number;
+    doctorDetails: any;
+    constructor(private authService: AuthService, private router: Router) { }
+    userName: string = localStorage.getItem('userName') || 'User';
+    logout(): void {
+        
+    const confirmLogout = window.confirm('Are you sure you want to logout?');
+    if (!confirmLogout) {
+      return; 
     }
-  }
+        this.authService.logout();
+        this.router.navigate(["/auth"]);
+    }
+
 }

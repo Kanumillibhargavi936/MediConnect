@@ -1,8 +1,9 @@
 <app-navbar></app-navbar>
+
 <div *ngIf="role === 'DOCTOR'" class="dashboard-container">
     <h1>Doctor Dashboard</h1>
 
-    <!-- Doctor Details -->
+   
     <div class="doctor-details">
         <h2>Doctor Details</h2>
         <p><strong>Name:</strong> {{ doctorDetails?.fullName }}</p>
@@ -45,7 +46,7 @@
             </table>
         </div>
     </div>
-    <!-- Appointments -->
+  
     <div class="appointments-section">
         <h2>Appointments in Selected Clinic - {{ selectedClinicId }} </h2>
         <div *ngIf="selectClinicAppointments.length === 0" class="empty-list">
@@ -76,7 +77,7 @@
             </table>
         </div>
     </div>
-    <!-- Patients -->
+    
     <div class="patients-section">
         <h2>Patients </h2>
         <div *ngIf="patients.length === 0" class="empty-list">

@@ -1,0 +1,60 @@
+<div class="form-container">
+  <h2>Update Clinic</h2>
+  <form [formGroup]="clinicForm" (ngSubmit)="onSubmit()">
+      
+      <div class="form-group">
+          <label for="doctor">Doctor Name:</label>
+          <input type="text" id="doctor" formControlName="doctor" [readonly]="true" class="readonly-input" />
+      </div>
+
+      
+      <div class="form-group">
+          <label for="clinicName">Clinic Name:</label>
+          <input type="text" id="clinicName" formControlName="clinicName" />
+          <div class="error" *ngIf="clinicForm.get('clinicName')?.invalid && clinicForm.get('clinicName')?.touched">
+              Clinic Name is required and must have at least 2 characters.
+          </div>
+      </div>
+
+      
+      <div class="form-group">
+          <label for="location">Location:</label>
+          <input type="text" id="location" formControlName="location" />
+          <div class="error" *ngIf="clinicForm.get('location')?.invalid && clinicForm.get('location')?.touched">
+              Location is required.
+          </div>
+      </div>
+
+      
+      <div class="form-group">
+          <label for="contactNumber">Contact Number:</label>
+          <input type="text" id="contactNumber" formControlName="contactNumber" />
+          <div class="error"
+              *ngIf="clinicForm.get('contactNumber')?.invalid && clinicForm.get('contactNumber')?.touched">
+              Contact Number is required and must be a 10-digit number.
+          </div>
+      </div>
+
+      
+      <div class="form-group">
+          <label for="establishedYear">Established Year:</label>
+          <input type="number" id="establishedYear" formControlName="establishedYear" />
+          <div class="error"
+              *ngIf="clinicForm.get('establishedYear')?.invalid && clinicForm.get('establishedYear')?.touched">
+              Established Year is required and must be a valid year.
+          </div>
+      </div>
+
+      
+      <div class="form-actions">
+          <button type="submit" [disabled]="clinicForm.invalid">Submit</button>
+      </div>
+      <div class="form-footer">
+          <a routerLink="/mediconnect" class="link">Dashboard</a>
+      </div>
+  </form>
+
+
+  <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+</div>

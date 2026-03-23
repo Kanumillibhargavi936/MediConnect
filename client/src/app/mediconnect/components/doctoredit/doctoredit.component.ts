@@ -1,108 +1,108 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup /*, Validators*/ } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { MediConnectService } from '../../services/mediconnect.service';
 import { Doctor } from '../../models/Doctor';
+import { DoctorDTO } from '../../models/DoctorDTO';
 import { User } from '../../models/User';
+import { MediConnectService } from '../../services/mediconnect.service';
 
 @Component({
-  selector: 'app-doctor-edit',
-  templateUrl: './doctoredit.component.html',
-  styleUrls: ['./doctoredit.component.scss']
+    selector: 'app-doctoredit',
+    templateUrl: './doctoredit.component.html',
+    styleUrls: ['./doctoredit.component.scss']
 })
 export class DoctorEditComponent implements OnInit {
-  doctorForm!: FormGroup;
+    doctorForm!: FormGroup;
+    successMessage: string | null = null;
+    errorMessage: string | null = null;
 
-  doctorId!: number;
-  doctor: Doctor | undefined;
-  user: User | undefined;
+    doctorId!: number;
+    userId!: number;
+    doctor!: Doctor;
+    user!: User;
 
-  successMessage: string | null = null;
-  errorMessage: string | null = null;
+    constructor(
+        private formBuilder: FormBuilder,
+        private mediconnectService: MediConnectService,
+        private route: ActivatedRoute
+    ) { }
 
-  constructor(
-    private fb: FormBuilder,
-    private route: ActivatedRoute,
-    private service: MediConnectService
-  ) {}
+    ngOnInit(): void {
+        this.userId = Number(localStorage.getItem("user_id"));
+        this.initializeForm();
+        this.doctorId = Number(this.route.snapshot.paramMap.get('id'));
+        this.loadDoctorDetails();
+    }
 
-  ngOnInit(): void {
-    this.doctorId = Number(this.route.snapshot.paramMap.get('doctorId')) || 0;
-
-    // ✅ Keep the form very lenient to avoid test flakiness on validation
-    this.doctorForm = this.fb.group({
-      fullName: [''],
-      specialty: [''],
-      contactNumber: [''],
-      email: [''],
-      yearsOfExperience: [0],
-      username: [''],
-      password: ['']
-    });
-
-    this.loadData();
-  }
-
-  loadData(): void {
-    this.errorMessage = null;
-
-    // The Day-25 test expects this call and to reflect username/password in the form
-    this.service.getUserById(this.doctorId).subscribe({
-      next: (u: User) => {
-        this.user = u;
-        this.doctorForm.patchValue({
-          username: u.username,
-          password: u.password
+    initializeForm(): void {
+        this.doctorForm = this.formBuilder.group({
+            fullName: ['', [Validators.required, Validators.minLength(2)]],
+            username: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9]+$/)]],
+            password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Z])(?=.*\d).+$/)]],
+            specialty: ['', [Validators.required]],
+            contactNumber: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+            email: [{ value: '', disabled: true }],
+            yearsOfExperience: [null, [Validators.required, Validators.min(1)]]
         });
-      },
-      error: () => {
-        this.user = undefined;
-      }
-    });
+    }
 
-    // Load doctor details and patch the form
-    this.service.getDoctorById(this.doctorId).subscribe({
-      next: (d: Doctor) => {
-        this.doctor = d;
-        this.doctorForm.patchValue({
-          fullName: d.fullName,
-          specialty: d.specialty,
-          contactNumber: d.contactNumber,
-          email: d.email,
-          yearsOfExperience: d.yearsOfExperience
+    loadDoctorDetails(): void {
+        this.mediconnectService.getDoctorById(this.doctorId).subscribe({
+            next: (response) => {
+                this.doctor = response;
+                this.doctorForm.patchValue({
+                    fullName: this.doctor.fullName,
+                    contactNumber: this.doctor.contactNumber,
+                    email: this.doctor.email,
+                    specialty: this.doctor.specialty,
+                    yearsOfExperience: this.doctor.yearsOfExperience
+                });
+            },
+            error: (error) => console.error('Error loading doctor details:', error)
         });
-      },
-      error: () => {
-        this.errorMessage = 'Failed to load doctor details.';
-        this.doctor = undefined;
-      }
-    });
-  }
+        this.mediconnectService.getUserById(this.userId).subscribe({
+            next: (response) => {
+                this.user = response;
+                this.doctorForm.patchValue({
+                    username: this.user.username,
+                    password: this.user.password
+                });
+            },
+            error: (error) => console.error('Error loading user details:', error)
+        });
+    }
 
-  onSubmit(): void {
-    // ✅ Do not block submission on form invalid for unit tests
-    this.successMessage = null;
-    this.errorMessage = null;
+    onSubmit(): void {
+        if (this.doctorForm.valid) {
+            const doctor: DoctorDTO = {
+                ...this.doctorForm.getRawValue(),
+                doctorId: this.doctorId,
+            };
+            this.mediconnectService.updateDoctor(doctor).subscribe({
+                next: (response) => {
+                    this.errorMessage = null;
+                    console.log(response);
+                    this.doctorForm.reset();
+                    this.successMessage = 'Doctor updated successfully!';
+                },
+                error: (error) => {
+                    this.handleError(error);
+                }
+            });
+        }
+    }
 
-    const updated: Doctor = {
-      doctorId: this.doctorId,
-      fullName: this.doctorForm.value.fullName,
-      specialty: this.doctorForm.value.specialty,
-      contactNumber: this.doctorForm.value.contactNumber,
-      email: this.doctorForm.value.email,
-      yearsOfExperience: this.doctorForm.value.yearsOfExperience
-    } as Doctor;
-
-    this.service.updateDoctor(updated as any).subscribe({
-      next: () => {
-        // ✅ Exact string the test expects
-        this.successMessage = 'Doctor updated successfully!';
-        this.errorMessage = null;
-      },
-      error: () => {
-        this.errorMessage = 'Error updating doctor.';
+    private handleError(error: HttpErrorResponse): void {
+        if (error.error instanceof ErrorEvent) {
+            this.errorMessage = `Client-side error: ${error.error.message}`;
+        } else {
+            this.errorMessage = `Server-side error: ${error.status} ${error.message}`;
+            if (error.status === 400) {
+                this.errorMessage = 'Bad request. Please check your input.';
+            }
+        }
         this.successMessage = null;
-      }
-    });
-  }
+        console.error('An error occurred:', this.errorMessage);
+    }
 }

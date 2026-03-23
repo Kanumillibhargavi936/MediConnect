@@ -1,90 +1,83 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Appointment } from '../../models/Appointment';
 import { Clinic } from '../../models/Clinic';
 import { Patient } from '../../models/Patient';
 import { MediConnectService } from '../../services/mediconnect.service';
-import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-  selector: 'app-appointment-create',
-  templateUrl: './appointment.component.html',
-  styleUrls: ['./appointment.component.scss']
+    selector: 'app-appointment',
+    templateUrl: './appointment.component.html',
+    styleUrls: ['./appointment.component.scss']
 })
 export class AppointmentCreateComponent implements OnInit {
-  appointmentForm!: FormGroup;
-  successMessage: string | null = null;
-  errorMessage: string | null = null;
+    appointmentForm!: FormGroup;
+    successMessage: string | null = null;
+    errorMessage: string | null = null;
 
-  clinics: Clinic[] = [];
-  selectedPatient!: Patient;
-  patientId: number = 0;
+    clinics!: Clinic[];
+    selectedPatient!: Patient;
+    patientId!: number;
 
-  constructor(private fb: FormBuilder, private service: MediConnectService) {}
+    constructor(private formBuilder: FormBuilder, private mediconnectService: MediConnectService) { }
 
-  ngOnInit(): void {
-    this.patientId = Number(localStorage.getItem('patient_id') || 0);
-
-    // Always call, even if 0 (some specs assert it)
-    this.service.getPatientById(this.patientId).subscribe({
-      next: (p: Patient) => (this.selectedPatient = p)
-    });
-
-    this.service.getAllClinics().subscribe({
-      next: (c: Clinic[]) => (this.clinics = c)
-    });
-
-    this.appointmentForm = this.fb.group({
-      patientId: [{ value: this.patientId, disabled: true }],
-      clinicId: [null, [Validators.required]],
-      appointmentDate: ['', [Validators.required]],
-      status: ['Scheduled', [Validators.required]],
-      purpose: ['', [Validators.required]]
-    });
-  }
-
-  onSubmit(): void {
-    this.successMessage = null;
-    this.errorMessage = null;
-
-    if (this.appointmentForm.invalid) {
-      this.errorMessage = 'Please fix the errors before submitting.';
-      return;
+    ngOnInit(): void {
+        this.patientId = Number(localStorage.getItem("patient_id"));
+        this.mediconnectService.getPatientById(this.patientId).subscribe({
+            next: (response) => {
+                this.selectedPatient = response;
+            },
+            error: (error) => console.log('Error loading selectedPatient', error)
+        });
+        this.appointmentForm = this.formBuilder.group({
+            patientId: [{value: this.patientId , disabled: true}],
+            clinic: ["", [Validators.required]],
+            appointmentDate: ['', [Validators.required]],
+            status: ['', [Validators.required]],
+            purpose: ['', [Validators.required, Validators.minLength(5)]]
+        });
+        this.mediconnectService.getAllClinics().subscribe({
+            next: (response) => {
+                this.clinics = response;
+            },
+            error: (error) => console.log('Error loading clinics', error)
+        });
     }
 
-    const payload = {
-      appointmentId: 0,
-      patientId: this.patientId,
-      clinicId: this.appointmentForm.value.clinicId,
-      appointmentDate: this.appointmentForm.value.appointmentDate,
-      status: this.appointmentForm.value.status,
-      purpose: this.appointmentForm.value.purpose
-    };
+    onSubmit(): void {
+        if (this.appointmentForm.valid) {
+            const appointment: Appointment = {
+                ...this.appointmentForm.getRawValue(),
+                patient: this.selectedPatient,
+            };
+            this.mediconnectService.createAppointment(appointment).subscribe({
+                next: (response) => {
+                    this.errorMessage = null;
+                    console.log(response);
+                    this.appointmentForm.reset();
+                    this.successMessage = 'Appointment created successfully!';
+                },
+                error: (error) => {
+                    this.handleError(error);
+                }
+            });
+        } else {
+            this.errorMessage = 'Please fill out all required fields correctly.';
+            this.successMessage = null;
+        }
+    }
 
-    this.service.createAppointment(payload as any).subscribe({
-      next: () => {
-        this.successMessage = 'Appointment created successfully!';
-        this.errorMessage = null;
-        this.appointmentForm.reset({
-          patientId: this.patientId,
-          clinicId: null,
-          appointmentDate: '',
-          status: 'Scheduled',
-          purpose: ''
-        });
-      },
-      error: (err: HttpErrorResponse) => this.handleError(err)
-    });
-  }
-
-  private handleError(error: HttpErrorResponse): void {
-    if (typeof error.error === 'string') this.errorMessage = error.error;
-    else if (error.message) this.errorMessage = error.message;
-    else this.errorMessage = 'Failed to create appointment.';
-  }
-
-  // ✅ Getters used by the template (fixes “Property 'clinicId' does not exist” etc.)
-  get clinicId() { return this.appointmentForm.get('clinicId'); }
-  get appointmentDate() { return this.appointmentForm.get('appointmentDate'); }
-  get status() { return this.appointmentForm.get('status'); }
-  get purpose() { return this.appointmentForm.get('purpose'); }
+    private handleError(error: HttpErrorResponse): void {
+        if (error.error instanceof ErrorEvent) {
+            this.errorMessage = `Client-side error: ${error.error.message}`;
+        } else {
+            this.errorMessage = `Server-side error: ${error.status} ${error.message}`;
+            if (error.status === 400) {
+                this.errorMessage = 'Bad request. Please check your input.';
+            }
+        }
+        this.successMessage = null;
+        console.error('An error occurred:', this.errorMessage);
+    }
 }

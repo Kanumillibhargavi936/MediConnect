@@ -1,54 +1,77 @@
-<app-navbar></app-navbar>
+<div class="form-container">
+  <h2>Update Patient</h2>
+  <form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
 
-<div class="container py-3">
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <h4 class="mb-3">Update Patient</h4>
-
-      <form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
-        <div class="row g-3">
-          <div class="col-md-6">
-            <label class="form-label">Full Name</label>
-            <input class="form-control" formControlName="fullName">
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Username</label>
-            <input class="form-control" formControlName="username">
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Password</label>
-            <input type="password" class="form-control" formControlName="password" placeholder="Min 8, 1 uppercase, 1 number">
-          </div>
-
-          <div class="col-md-4">
-            <label class="form-label">Date of Birth</label>
-            <input type="date" class="form-control" formControlName="dateOfBirth">
-          </div>
-
-          <div class="col-md-4">
-            <label class="form-label">Contact Number</label>
-            <input class="form-control" formControlName="contactNumber">
-          </div>
-
-          <div class="col-md-4">
-            <label class="form-label">Email</label>
-            <input type="email" class="form-control" formControlName="email">
-          </div>
-
-          <div class="col-md-12">
-            <label class="form-label">Address</label>
-            <textarea rows="3" class="form-control" formControlName="address"></textarea>
-          </div>
-        </div>
-
-        <div class="d-flex gap-2 mt-3">
-          <button class="btn btn-primary" type="submit" [disabled]="patientForm.invalid">Submit</button>
-          <a routerLink="/mediconnect/dashboard" class="btn btn-outline-secondary">Dashboard</a>
-        </div>
-      </form>
-
-      <div class="alert alert-success mt-3" *ngIf="successMessage">{{ successMessage }}</div>
-      <div class="alert alert-danger mt-3" *ngIf="errorMessage">{{ errorMessage }}</div>
+    <div class="form-group">
+      <label for="fullName">Full Name:</label>
+      <input type="text" id="fullName" formControlName="fullName" />
+      <div class="error" *ngIf="patientForm.get('fullName')?.invalid && patientForm.get('fullName')?.touched">
+        Full Name is required and must have at least 2 characters.
+      </div>
     </div>
-  </div>
+
+    <div class="form-group">
+      <label for="username">Username:</label>
+      <input type="text" id="username" formControlName="username" />
+      <div *ngIf="patientForm.get('username')?.invalid && patientForm.get('username')?.touched" class="error">
+        <small *ngIf="patientForm.get('username')?.hasError('required')">Username is required.</small>
+        <small *ngIf="patientForm.get('username')?.hasError('pattern')">Username cannot contain special
+          characters.</small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password:</label>
+      <input type="password" id="password" formControlName="password" readonly />
+      <div *ngIf="patientForm.get('password')?.invalid && patientForm.get('password')?.touched" class="error">
+        <small *ngIf="patientForm.get('password')?.hasError('required')">Password is required.</small>
+        <small *ngIf="patientForm.get('password')?.hasError('minlength')">Password must be at least 8
+          characters long.</small>
+        <small *ngIf="patientForm.get('password')?.hasError('pattern')">Password must contain at least one
+          capital letter and one numeric digit.</small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="dateOfBirth">Date of Birth:</label>
+      <input type="date" id="dateOfBirth" formControlName="dateOfBirth" />
+      <div class="error" *ngIf="patientForm.get('dateOfBirth')?.invalid && patientForm.get('dateOfBirth')?.touched">
+        Date of Birth is required.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="contactNumber">Contact Number:</label>
+      <input type="text" id="contactNumber" formControlName="contactNumber" />
+      <div class="error" *ngIf="patientForm.get('contactNumber')?.invalid && patientForm.get('contactNumber')?.touched">
+        Contact Number must be a 10-digit valid number.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input type="email" id="email" formControlName="email" />
+      <div class="error" *ngIf="patientForm.get('email')?.invalid && patientForm.get('email')?.touched">
+        Please provide a valid email address.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="address">Address:</label>
+      <textarea id="address" formControlName="address"></textarea>
+      <div class="error" *ngIf="patientForm.get('address')?.invalid && patientForm.get('address')?.touched">
+        Address must have at least 5 characters.
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" [disabled]="patientForm.invalid">Submit</button>
+    </div>
+    <div class="form-footer">
+      <a routerLink="/mediconnect" class="link">Dashboard</a>
+    </div>
+  </form>
+
+  <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
 </div>

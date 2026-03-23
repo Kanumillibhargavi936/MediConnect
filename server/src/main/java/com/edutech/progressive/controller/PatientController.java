@@ -1,151 +1,88 @@
 package com.edutech.progressive.controller;
+
+import com.edutech.progressive.dto.PatientDTO;
 import com.edutech.progressive.entity.Patient;
- 
-import com.edutech.progressive.exception.PatientAlreadyExistsException;
- 
-import com.edutech.progressive.exception.PatientNotFoundException;
- 
-import com.edutech.progressive.service.PatientService;
- 
+import com.edutech.progressive.service.impl.PatientServiceImplArraylist;
+import com.edutech.progressive.service.impl.PatientServiceImplJpa;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
- 
 import org.springframework.http.HttpStatus;
- 
 import org.springframework.http.ResponseEntity;
- 
-import org.springframework.web.bind.annotation.*;
-import java.util.Collections;
- 
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
+
 @RestController
- 
 @RequestMapping("/patient")
- 
 public class PatientController {
-    private final PatientService patientService;
-    // Explicitly choose the JPA-backed PatientService
- 
-    public PatientController(@Qualifier("patientServiceImplJpa") PatientService patientService) {
- 
-        this.patientService = patientService;
- 
-    }
+
+    @Autowired
+    PatientServiceImplJpa patientServiceImplJpa;
+
     @GetMapping
- 
-    public ResponseEntity<?> getAllPatients() {
- 
+    public ResponseEntity<List<Patient>> getAllPatients() {
         try {
- 
-            List<Patient> list = patientService.getAllPatients();
- 
-            return ResponseEntity.ok(list);
- 
+            List<Patient> patientList = patientServiceImplJpa.getAllPatients();
+            return new ResponseEntity<>(patientList, HttpStatus.OK);
         } catch (Exception e) {
- 
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
- 
-                    .body("Error fetching patients: " + e.getMessage());
- 
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
- 
     }
+
     @GetMapping("/{patientId}")
- 
     public ResponseEntity<?> getPatientById(@PathVariable int patientId) {
- 
         try {
- 
-            Patient p = patientService.getPatientById(patientId);
- 
-            return ResponseEntity.ok(p);
- 
-        } catch (PatientNotFoundException e) {
- 
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
- 
+            Patient patient = patientServiceImplJpa.getPatientById(patientId);
+            return new ResponseEntity<>(patient, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
- 
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
- 
-                    .body("Error fetching patient: " + e.getMessage());
- 
+            return new ResponseEntity<>("An error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
- 
     }
+
     @PostMapping
- 
     public ResponseEntity<?> addPatient(@RequestBody Patient patient) {
- 
         try {
- 
-            Integer id = patientService.addPatient(patient);
- 
-            Patient saved = patientService.getPatientById(id);
- 
-            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
- 
-        } catch (PatientAlreadyExistsException e) {
- 
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
- 
+            int patientId = patientServiceImplJpa.addPatient(patient);
+            return new ResponseEntity<>(patientId, HttpStatus.CREATED);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
- 
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
- 
-                    .body("Error creating patient: " + e.getMessage());
- 
+            return new ResponseEntity<>("An error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
- 
     }
+
     @PutMapping("/{patientId}")
- 
-    public ResponseEntity<?> updatePatient(@PathVariable int patientId, @RequestBody Patient patient) {
- 
+    public ResponseEntity<?> updatePatient(@PathVariable int patientId, @RequestBody PatientDTO patient) {
         try {
- 
             patient.setPatientId(patientId);
- 
-            patientService.updatePatient(patient);
- 
-            Patient updated = patientService.getPatientById(patientId);
- 
-            return ResponseEntity.ok(updated);
- 
-        } catch (PatientNotFoundException e) {
- 
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
- 
-        } catch (PatientAlreadyExistsException e) {
- 
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
- 
+            patientServiceImplJpa.modifyPatientDetails(patient);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
- 
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
- 
-                    .body("Error updating patient: " + e.getMessage());
- 
+            return new ResponseEntity<>("An error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
- 
     }
+
     @DeleteMapping("/{patientId}")
- 
     public ResponseEntity<?> deletePatient(@PathVariable int patientId) {
- 
         try {
- 
-            patientService.deletePatient(patientId); // idempotent
- 
-            return ResponseEntity.ok(Collections.singletonMap("message", "Patient deleted successfully"));
- 
+            patientServiceImplJpa.deletePatient(patientId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
- 
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
- 
-                    .body("Error deleting patient: " + e.getMessage());
- 
+            return new ResponseEntity<>("An error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
- 
     }
- 
 }

@@ -1,48 +1,48 @@
 package com.edutech.progressive.entity;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@Table(name = "clinic")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Table(name="clinic")
 public class Clinic {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "clinic_id")
-    private Integer clinicId;
+    @Column(name="clinic_id")
+    private int clinicId;
 
-    @Column(name = "clinic_name", nullable = false)
+    @Column(name = "clinic_name",nullable = false)
     private String clinicName;
 
-    @Column(name = "location")
+    @Column(name="location")
     private String location;
 
-    @Column(name = "contact_number")
+    @Column(name="contact_number")
     private String contactNumber;
 
-    @Column(name = "established_year")
-    private Integer establishedYear;
+    @Column(name="established_year")
+    private int establishedYear;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "doctor_id")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Doctor doctor;
 
-    // ------------------------
-    // Constructors
-    // ------------------------
     public Clinic() {
     }
 
-    public Clinic(Integer clinicId,
-                  String clinicName,
-                  String location,
-                  String contactNumber,
-                  Integer establishedYear,
-                  Doctor doctor) {
+    
+
+    public Clinic(int clinicId, String clinicName, String location, String contactNumber, int establishedYear,Doctor doctor) {
         this.clinicId = clinicId;
         this.clinicName = clinicName;
         this.location = location;
@@ -51,14 +51,13 @@ public class Clinic {
         this.doctor = doctor;
     }
 
-    // ------------------------
-    // Getters / Setters
-    // ------------------------
-    public Integer getClinicId() {
+
+
+    public int getClinicId() {
         return clinicId;
     }
 
-    public void setClinicId(Integer clinicId) {
+    public void setClinicId(int clinicId) {
         this.clinicId = clinicId;
     }
 
@@ -78,6 +77,7 @@ public class Clinic {
         this.location = location;
     }
 
+    
     public String getContactNumber() {
         return contactNumber;
     }
@@ -86,53 +86,32 @@ public class Clinic {
         this.contactNumber = contactNumber;
     }
 
-    public Integer getEstablishedYear() {
+    public int getEstablishedYear() {
         return establishedYear;
     }
 
-    public void setEstablishedYear(Integer establishedYear) {
+    public void setEstablishedYear(int establishedYear) {
         this.establishedYear = establishedYear;
     }
+
+
 
     public Doctor getDoctor() {
         return doctor;
     }
 
+
+
     public void setDoctor(Doctor doctor) {
         this.doctor = doctor;
     }
 
-    // ------------------------
-    // JDBC compatibility accessors for old DAO code
-    // ------------------------
-    @Transient
-    public Integer getDoctorId() {
-        return (doctor != null ? doctor.getDoctorId() : null);
-    }
+    
 
-    public void setDoctorId(Integer doctorId) {
-        if (doctorId == null) {
-            this.doctor = null;
-        } else {
-            // Lightweight reference with only ID set
-            Doctor d = new Doctor();
-            d.setDoctorId(doctorId);
-            this.doctor = d;
-        }
-    }
+    
 
-    // ------------------------
-    // toString
-    // ------------------------
-    @Override
-    public String toString() {
-        return "Clinic{" +
-                "clinicId=" + clinicId +
-                ", clinicName='" + clinicName + '\'' +
-                ", location='" + location + '\'' +
-                ", contactNumber='" + contactNumber + '\'' +
-                ", establishedYear=" + establishedYear +
-                ", doctorId=" + getDoctorId() +
-                '}';
-    }
+
+    
+
+
 }

@@ -1,57 +1,57 @@
 <div class="form-container">
-    <h2>Create Doctor</h2>
-    <form [formGroup]="doctorForm" (ngSubmit)="onSubmit()">
+  <h2>Create Doctor</h2>
+  <form [formGroup]="doctorForm" (ngSubmit)="onSubmit()">
 
-        <div class="form-group">
-            <label for="fullName">Full Name:</label>
-            <input type="text" id="fullName" formControlName="fullName" />
-            <div class="error" *ngIf="doctorForm.get('fullName')?.invalid && doctorForm.get('fullName')?.touched">
-                Full Name is required and must have at least 2 characters.
-            </div>
-        </div>
+      <div class="form-group">
+          <label for="fullName">Full Name:</label>
+          <input type="text" id="fullName" formControlName="fullName" />
+          <div class="error" *ngIf="doctorForm.get('fullName')?.invalid && doctorForm.get('fullName')?.touched">
+              Full Name is required and must have at least 2 characters.
+          </div>
+      </div>
 
-        <div class="form-group">
-            <label for="specialty">Specialty:</label>
-            <input type="text" id="specialty" formControlName="specialty" />
-            <div class="error" *ngIf="doctorForm.get('specialty')?.invalid && doctorForm.get('specialty')?.touched">
-                Specialty is required.
-            </div>
-        </div>
+      <div class="form-group">
+          <label for="specialty">Specialty:</label>
+          <input type="text" id="specialty" formControlName="specialty" />
+          <div class="error" *ngIf="doctorForm.get('specialty')?.invalid && doctorForm.get('specialty')?.touched">
+              Specialty is required.
+          </div>
+      </div>
 
-        <div class="form-group">
-            <label for="contactNumber">Contact Number:</label>
-            <input type="text" id="contactNumber" formControlName="contactNumber" />
-            <div class="error"
-                *ngIf="doctorForm.get('contactNumber')?.invalid && doctorForm.get('contactNumber')?.touched">
-                Contact Number is required and must be a 10-digit number.
-            </div>
-        </div>
+      <div class="form-group">
+          <label for="contactNumber">Contact Number:</label>
+          <input type="text" id="contactNumber" formControlName="contactNumber" />
+          <div class="error"
+              *ngIf="doctorForm.get('contactNumber')?.invalid && doctorForm.get('contactNumber')?.touched">
+              Contact Number is required and must be a 10-digit number.
+          </div>
+      </div>
 
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" formControlName="email" />
-            <div class="error" *ngIf="doctorForm.get('email')?.invalid && doctorForm.get('email')?.touched">
-                Email is required and must be valid.
-            </div>
-        </div>
+      <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" formControlName="email" />
+          <div class="error" *ngIf="doctorForm.get('email')?.invalid && doctorForm.get('email')?.touched">
+              Email is required and must be valid.
+          </div>
+      </div>
 
-        <div class="form-group">
-            <label for="yearsOfExperience">Years of Experience:</label>
-            <input type="number" id="yearsOfExperience" formControlName="yearsOfExperience" />
-            <div class="error"
-                *ngIf="doctorForm.get('yearsOfExperience')?.invalid && doctorForm.get('yearsOfExperience')?.touched">
-                Years of Experience is required and must be greater than 0.
-            </div>
-        </div>
+      <div class="form-group">
+          <label for="yearsOfExperience">Years of Experience:</label>
+          <input type="number" id="yearsOfExperience" formControlName="yearsOfExperience" />
+          <div class="error"
+              *ngIf="doctorForm.get('yearsOfExperience')?.invalid && doctorForm.get('yearsOfExperience')?.touched">
+              Years of Experience is required and must be greater than 0.
+          </div>
+      </div>
 
-        <div class="form-actions">
-            <button type="submit">Submit</button>
-        </div>
-        <div class="form-footer">
-            <a routerLink="/mediconnect" class="link">Dashboard</a>
-        </div>
-    </form>
+      <div class="form-actions">
+          <button type="submit">Submit</button>
+      </div>
+      <div class="form-footer">
+          <a routerLink="/mediconnect" class="link">Dashboard</a>
+      </div>
+  </form>
 
-    <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
-    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
 </div>

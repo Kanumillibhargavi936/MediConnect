@@ -60,12 +60,12 @@ export class ClinicCreateComponent implements OnInit {
 
     private handleError(error: HttpErrorResponse): void {
         if (error.error instanceof ErrorEvent) {
-            // Client-side error
+  
             this.errorMessage = `Client-side error: ${error.error.message}`;
         } else {
-            // Backend error
+  
             this.errorMessage = `Server-side error: ${error.status} ${error.message}`;
-            // Optionally, you can handle different status codes here
+  
             if (error.status === 400) {
                 this.errorMessage = 'Bad request. Please check your input.';
             }

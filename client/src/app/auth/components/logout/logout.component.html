@@ -1,3 +1,12 @@
-<button type="button" class="btn btn-outline-light btn-sm" (click)="logout()">
-  Logout
-</button>
+<div class="logout-container">
+  <img src="https://ui-avatars.com/api/?name={{userName || 'U'}}&background=395490&color=fff&rounded=true&size=40" 
+       alt="User Avatar" class="logout-avatar">
+  
+  <span class="logout-greeting">
+    Hello, <strong>{{ userName || 'User' }}</strong>
+  </span>
+
+  <span class="logout-divider"></span> 
+  
+  <button (click)="logout()" class="logout-button">Logout</button>
+</div>

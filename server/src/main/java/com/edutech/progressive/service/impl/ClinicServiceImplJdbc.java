@@ -1,11 +1,12 @@
 package com.edutech.progressive.service.impl;
 
+import java.sql.SQLException;
+import java.util.List;
+
+
 import com.edutech.progressive.dao.ClinicDAO;
 import com.edutech.progressive.entity.Clinic;
 import com.edutech.progressive.service.ClinicService;
-
-import java.sql.SQLException;
-import java.util.List;
 
 public class ClinicServiceImplJdbc implements ClinicService {
 
@@ -16,65 +17,48 @@ public class ClinicServiceImplJdbc implements ClinicService {
     }
 
     @Override
-    public List<Clinic> getAllClinics() {
+    public List<Clinic> getAllClinics() throws Exception {
         try {
             return clinicDAO.getAllClinics();
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to fetch clinics", e);
+            throw new Exception("Error fetching all clinics", e);
         }
     }
 
     @Override
-    public Clinic getClinicById(int clinicId) {
+    public Clinic getClinicById(int clinicId) throws Exception {
         try {
-            return clinicDAO.getClinicById(clinicId);
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to fetch clinic by id: " + clinicId, e);
+            Clinic clinic = clinicDAO.getClinicById(clinicId);
+            return clinic;
+        } catch (Exception e) {
+            throw new Exception("Error fetching clinic with ID " + clinicId, e);
         }
     }
 
     @Override
-    public Integer addClinic(Clinic clinic) {
+    public Integer addClinic(Clinic clinic) throws Exception {
         try {
             return clinicDAO.addClinic(clinic);
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to add clinic", e);
+            throw new Exception("Error adding clinic: " + clinic.getClinicName(), e);
         }
     }
 
     @Override
-    public void updateClinic(Clinic clinic) {
+    public void updateClinic(Clinic clinic) throws Exception {
         try {
             clinicDAO.updateClinic(clinic);
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to update clinic", e);
+            throw new Exception("Error updating clinic with ID " + clinic.getClinicId(), e);
         }
     }
 
     @Override
-    public void deleteClinic(int clinicId) {
+    public void deleteClinic(int clinicId) throws Exception {
         try {
             clinicDAO.deleteClinic(clinicId);
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to delete clinic", e);
-        }
-    }
-
-    @Override
-    public List<Clinic> getAllClinicByLocation(String location) {
-        try {
-            return clinicDAO.getAllClinicByLocation(location);
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to fetch clinics by location: " + location, e);
-        }
-    }
-
-    @Override
-    public List<Clinic> getAllClinicByDoctorId(int doctorId) {
-        try {
-            return clinicDAO.getAllClinicByDoctorId(doctorId);
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to fetch clinics by doctorId: " + doctorId, e);
+            throw new Exception("Error deleting clinic with ID " + clinicId, e);
         }
     }
 }

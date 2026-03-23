@@ -2,197 +2,235 @@ package com.edutech.progressive.dao;
 
 import com.edutech.progressive.config.DatabaseConnectionManager;
 import com.edutech.progressive.entity.Clinic;
+import com.edutech.progressive.entity.Doctor;
+import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;   // IMPORTANT: java.sql.Statement
-import java.sql.Types;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+// @Repository("clinicDAOImpl")
 public class ClinicDAOImpl implements ClinicDAO {
+
+    public ClinicDAOImpl() {}
 
     @Override
     public int addClinic(Clinic clinic) throws SQLException {
-        final String sql = "INSERT INTO clinic (clinic_name, location, doctor_id, contact_number, established_year) " +
-                           "VALUES (?, ?, ?, ?, ?)";
-        try (Connection conn = DatabaseConnectionManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        String sql = "INSERT INTO clinic (clinic_name, location, doctor_id, contact_number, established_year) " +
+                     "VALUES (?, ?, ?, ?, ?)";
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet keys = null;
+
+        try {
+            connection = DatabaseConnectionManager.getConnection();
+            ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             ps.setString(1, clinic.getClinicName());
             ps.setString(2, clinic.getLocation());
 
-            Integer did = clinic.getDoctorId();
-            if (did != null && did > 0) {
-                ps.setInt(3, did);
+            Integer doctorId = null;
+            if (clinic.getDoctor() != null) {
+                doctorId = clinic.getDoctor().getDoctorId();
+            }
+            if (doctorId != null && doctorId > 0) {
+                ps.setInt(3, doctorId);
             } else {
                 ps.setNull(3, Types.INTEGER);
             }
 
             ps.setString(4, clinic.getContactNumber());
+            ps.setInt(5, clinic.getEstablishedYear());
 
-            if (clinic.getEstablishedYear() != null) {
-                ps.setInt(5, clinic.getEstablishedYear());
+            int affected = ps.executeUpdate();
+            if (affected == 0) {
+                throw new SQLException("Creating clinic failed: no rows affected.");
+            }
+
+            keys = ps.getGeneratedKeys();
+            if (keys != null && keys.next()) {
+                int id = keys.getInt(1);
+                clinic.setClinicId(id);
+                return id;
             } else {
-                ps.setNull(5, Types.INTEGER);
+                throw new SQLException("Creating clinic failed: no ID obtained.");
             }
 
-            int rows = ps.executeUpdate();
-            if (rows > 0) {
-                try (ResultSet rs = ps.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        return rs.getInt(1); // return new clinic_id
-                    }
-                }
-            }
-            return -1;
+        } catch (SQLException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new SQLException("Unexpected error while adding clinic", e);
+        } finally {
+            closeQuietly(keys);
+            closeQuietly(ps);
+            closeQuietly(connection);
         }
     }
 
     @Override
     public Clinic getClinicById(int clinicId) throws SQLException {
-        final String sql = "SELECT clinic_id, clinic_name, location, doctor_id, contact_number, established_year " +
-                           "FROM clinic WHERE clinic_id = ?";
+        String sql = "SELECT clinic_id, clinic_name, location, doctor_id, contact_number, established_year " +
+                     "FROM clinic WHERE clinic_id = ?";
 
-        try (Connection conn = DatabaseConnectionManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
 
+        try {
+            connection = DatabaseConnectionManager.getConnection();
+            ps = connection.prepareStatement(sql);
             ps.setInt(1, clinicId);
+            rs = ps.executeQuery();
 
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapRowToClinic(rs);
+            if (rs.next()) {
+                Clinic c = new Clinic();
+                c.setClinicId(rs.getInt("clinic_id"));
+                c.setClinicName(rs.getString("clinic_name"));
+                c.setLocation(rs.getString("location"));
+                c.setContactNumber(rs.getString("contact_number"));
+                c.setEstablishedYear(rs.getInt("established_year"));
+
+                int doctorId = rs.getInt("doctor_id");
+                if (!rs.wasNull()) {
+                    Doctor d = new Doctor();
+                    d.setDoctorId(doctorId);
+                    c.setDoctor(d);
+                } else {
+                    c.setDoctor(null);
                 }
+
+                return c;
             }
+            return null;
+
+        } catch (SQLException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new SQLException("Unexpected error while fetching clinic id=" + clinicId, e);
+        } finally {
+            closeQuietly(rs);
+            closeQuietly(ps);
+            closeQuietly(connection);
         }
-        return null;
     }
 
     @Override
     public void updateClinic(Clinic clinic) throws SQLException {
-        final String sql = "UPDATE clinic " +
-                           "SET clinic_name = ?, location = ?, doctor_id = ?, contact_number = ?, established_year = ? " +
-                           "WHERE clinic_id = ?";
+        String sql = "UPDATE clinic SET clinic_name = ?, location = ?, doctor_id = ?, contact_number = ?, " +
+                     "established_year = ? WHERE clinic_id = ?";
 
-        try (Connection conn = DatabaseConnectionManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        Connection connection = null;
+        PreparedStatement ps = null;
+
+        try {
+            connection = DatabaseConnectionManager.getConnection();
+            ps = connection.prepareStatement(sql);
 
             ps.setString(1, clinic.getClinicName());
             ps.setString(2, clinic.getLocation());
 
-            Integer did = clinic.getDoctorId();
-            if (did != null && did > 0) {
-                ps.setInt(3, did);
+            Integer doctorId = null;
+            if (clinic.getDoctor() != null) {
+                doctorId = clinic.getDoctor().getDoctorId();
+            }
+            if (doctorId != null && doctorId > 0) {
+                ps.setInt(3, doctorId);
             } else {
                 ps.setNull(3, Types.INTEGER);
             }
 
             ps.setString(4, clinic.getContactNumber());
-
-            if (clinic.getEstablishedYear() != null) {
-                ps.setInt(5, clinic.getEstablishedYear());
-            } else {
-                ps.setNull(5, Types.INTEGER);
-            }
-
+            ps.setInt(5, clinic.getEstablishedYear());
             ps.setInt(6, clinic.getClinicId());
+
             ps.executeUpdate();
+
+        } catch (SQLException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new SQLException("Unexpected error while updating clinic id=" + clinic.getClinicId(), e);
+        } finally {
+            closeQuietly(ps);
+            closeQuietly(connection);
         }
     }
 
     @Override
     public void deleteClinic(int clinicId) throws SQLException {
-        final String sql = "DELETE FROM clinic WHERE clinic_id = ?";
+        String sql = "DELETE FROM clinic WHERE clinic_id = ?";
 
-        try (Connection conn = DatabaseConnectionManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        Connection connection = null;
+        PreparedStatement ps = null;
 
+        try {
+            connection = DatabaseConnectionManager.getConnection();
+            ps = connection.prepareStatement(sql);
             ps.setInt(1, clinicId);
             ps.executeUpdate();
+
+        } catch (SQLException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new SQLException("Unexpected error while deleting clinic id=" + clinicId, e);
+        } finally {
+            closeQuietly(ps);
+            closeQuietly(connection);
         }
     }
 
     @Override
     public List<Clinic> getAllClinics() throws SQLException {
-        final String sql = "SELECT clinic_id, clinic_name, location, doctor_id, contact_number, established_year FROM clinic";
-        List<Clinic> list = new ArrayList<>();
+        String sql = "SELECT clinic_id, clinic_name, location, doctor_id, contact_number, established_year " +
+                     "FROM clinic ORDER BY clinic_name ASC, clinic_id ASC";
 
-        try (Connection conn = DatabaseConnectionManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        List<Clinic> clinics = new ArrayList<>();
+
+        try {
+            connection = DatabaseConnectionManager.getConnection();
+            ps = connection.prepareStatement(sql);
+            rs = ps.executeQuery();
 
             while (rs.next()) {
-                list.add(mapRowToClinic(rs));
-            }
-        }
-        return list;
-    }
+                Clinic c = new Clinic();
+                c.setClinicId(rs.getInt("clinic_id"));
+                c.setClinicName(rs.getString("clinic_name"));
+                c.setLocation(rs.getString("location"));
+                c.setContactNumber(rs.getString("contact_number"));
+                c.setEstablishedYear(rs.getInt("established_year"));
 
-    @Override
-    public List<Clinic> getAllClinicByLocation(String location) throws SQLException {
-        final String sql = "SELECT clinic_id, clinic_name, location, doctor_id, contact_number, established_year " +
-                           "FROM clinic WHERE location = ?";
-        List<Clinic> list = new ArrayList<>();
-
-        try (Connection conn = DatabaseConnectionManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, location);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    list.add(mapRowToClinic(rs));
+                int doctorId = rs.getInt("doctor_id");
+                if (!rs.wasNull()) {
+                    Doctor d = new Doctor();
+                    d.setDoctorId(doctorId);
+                    c.setDoctor(d);
+                } else {
+                    c.setDoctor(null);
                 }
+
+                clinics.add(c);
             }
+
+            return clinics;
+
+        } catch (SQLException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new SQLException("Unexpected error while fetching all clinics", e);
+        } finally {
+            closeQuietly(rs);
+            closeQuietly(ps);
+            closeQuietly(connection);
         }
-        return list;
     }
 
-    @Override
-    public List<Clinic> getAllClinicByDoctorId(int doctorId) throws SQLException {
-        final String sql = "SELECT clinic_id, clinic_name, location, doctor_id, contact_number, established_year " +
-                           "FROM clinic WHERE doctor_id = ?";
-        List<Clinic> list = new ArrayList<>();
-
-        try (Connection conn = DatabaseConnectionManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, doctorId);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    list.add(mapRowToClinic(rs));
-                }
-            }
+    private void closeQuietly(AutoCloseable ac) {
+        if (ac != null) {
+            try { ac.close(); } catch (Exception ignored) {}
         }
-        return list;
-    }
-
-    // ---------- helper ----------
-    private Clinic mapRowToClinic(ResultSet rs) throws SQLException {
-        Clinic c = new Clinic();
-        c.setClinicId(rs.getInt("clinic_id"));
-        c.setClinicName(rs.getString("clinic_name"));
-        c.setLocation(rs.getString("location"));
-
-        Object didObj = rs.getObject("doctor_id");
-        if (didObj != null) {
-            c.setDoctorId(((Number) didObj).intValue());
-        } else {
-            c.setDoctorId(null);
-        }
-
-        c.setContactNumber(rs.getString("contact_number"));
-
-        Object eyObj = rs.getObject("established_year");
-        if (eyObj != null) {
-            c.setEstablishedYear(((Number) eyObj).intValue());
-        } else {
-            c.setEstablishedYear(null);
-        }
-
-        return c;
     }
 }

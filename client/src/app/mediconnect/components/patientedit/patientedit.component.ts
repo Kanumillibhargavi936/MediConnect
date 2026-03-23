@@ -1,106 +1,114 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MediConnectService } from '../../services/mediconnect.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { Patient } from '../../models/Patient';
+import { PatientDTO } from '../../models/PatientDTO';
 import { User } from '../../models/User';
+import { MediConnectService } from '../../services/mediconnect.service';
 
 @Component({
-  selector: 'app-patient-edit',
-  templateUrl: './patientedit.component.html',
-  styleUrls: ['./patientedit.component.scss']
+    selector: 'app-patientedit',
+    templateUrl: './patientedit.component.html',
+    styleUrls: ['./patientedit.component.scss']
 })
-export class PatientEditComponent implements OnInit {
-  patientForm!: FormGroup;
-  successMessage: string | null = null;
-  errorMessage: string | null = null;
+export class PatientEditComponent {
+    patientForm!: FormGroup;
+    successMessage: string | null = null;
+    errorMessage: string | null = null;
 
-  patientId: number = 0;
-  userId: number = 0;
+    patientId!: number;
+    userId!: number;
+    patient!: Patient;
+    user!: User;
 
-  patient!: Patient;
-  user!: User;
+    constructor(
+        private formBuilder: FormBuilder,
+        private mediconnectService: MediConnectService,
+        private route: ActivatedRoute
+    ) { }
 
-  constructor(private fb: FormBuilder, private service: MediConnectService) {}
+    ngOnInit(): void {
+        this.initializeForm();
+    }
 
-  ngOnInit(): void {
-    this.patientId = Number(localStorage.getItem('patient_id') || 0);
-    this.userId = Number(localStorage.getItem('user_id') || 0);
-    this.initializeForm();
-    this.loadPatientDetails();
-  }
+    initializeForm(): void {
+        this.userId = Number(localStorage.getItem("user_id"));
+        this.patientForm = this.formBuilder.group({
+            fullName: ['', [Validators.required, Validators.minLength(2)]],
+            dateOfBirth: ['', [Validators.required]],
+            contactNumber: [
+                '',
+                [Validators.required, Validators.pattern('^[0-9]{10}$')]
+            ],
+            username: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9]+$/)]],
+            password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Z])(?=.*\d).+$/)]],
+            email: [{ value: '', disabled: true }],
+            address: ['', [Validators.required, Validators.minLength(5)]]
+        });
+        this.patientId = Number(this.route.snapshot.paramMap.get('id'));
+        this.loadPatientDetails();
+    }
 
-  initializeForm(): void {
-    this.patientForm = this.fb.group({
-      fullName: ['', [Validators.required, Validators.minLength(2)]],
-      username: ['', [Validators.required, Validators.pattern(/^[A-Za-z0-9]+$/)]],
-      password: ['', [Validators.required, Validators.pattern(/^(?=.*[A-Z])(?=.*\d).{8,}$/)]],
-      dateOfBirth: ['', [Validators.required]],
-      contactNumber: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
-      email: ['', [Validators.required, Validators.email]],
-      address: ['', [Validators.required, Validators.minLength(5)]],
-    });
-  }
+    loadPatientDetails(): void {
+        this.mediconnectService.getPatientById(this.patientId).subscribe({
+            next: (response) => {
+                this.patient = response;
+                const formattedDate = new Date(response.dateOfBirth).toISOString().split('T')[0];
+                this.patientForm.patchValue({
+                    fullName: this.patient.fullName,
+                    dateOfBirth: formattedDate,
+                    contactNumber: this.patient.contactNumber,
+                    email: this.patient.email,
+                    address: this.patient.address
+                });
+            },
+            error: (error) => console.error('Error loading patient details:', error)
+        });
+        this.mediconnectService.getUserById(this.userId).subscribe({
+            next: (response) => {
+                this.user = response;
+                this.patientForm.patchValue({
+                    username: this.user.username,
+                    password: this.user.password
+                });
+            },
+            error: (error) => console.error('Error loading user details:', error)
+        });
+    }
 
-  loadPatientDetails(): void {
-    if (this.patientId > 0) {
-      this.service.getPatientById(this.patientId).subscribe({
-        next: (p) => {
-          this.patient = p;
-          this.patientForm.patchValue({
-            fullName: p.fullName,
-            dateOfBirth: p.dateOfBirth,
-            contactNumber: p.contactNumber,
-            email: p.email,
-            address: p.address
-          });
+    onSubmit(): void {
+        if (this.patientForm.valid) {
+            const patient: PatientDTO = {
+                ...this.patientForm.getRawValue(),
+                patientId: this.patientId,
+            };
+            this.mediconnectService.updatePatient(patient).subscribe({
+                next: (response) => {
+                    this.errorMessage = null;
+                    console.log(response);
+                    this.patientForm.reset();
+                    this.successMessage = 'Patient updated successfully!';
+                },
+                error: (error) => {
+                    this.handleError(error);
+                }
+            });
         }
-      });
     }
-    if (this.userId > 0) {
-      this.service.getUserById(this.userId).subscribe({
-        next: (u) => {
-          this.user = u;
-          this.patientForm.patchValue({
-            username: u.username
-          });
+
+    private handleError(error: HttpErrorResponse): void {
+        if (error.error instanceof ErrorEvent) {
+            
+            this.errorMessage = `Client-side error: ${error.error.message}`;
+        } else {
+           
+            this.errorMessage = `Server-side error: ${error.status} ${error.message}`;
+            
+            if (error.status === 400) {
+                this.errorMessage = 'Bad request. Please check your input.';
+            }
         }
-      });
+        this.successMessage = null;
     }
-  }
-
-  onSubmit(): void {
-    this.successMessage = null;
-    this.errorMessage = null;
-    if (this.patientForm.invalid) {
-      this.errorMessage = 'Please fix all errors before submitting.';
-      return;
-    }
-    const dto = {
-      patientId: this.patientId,
-      username: this.patientForm.value.username,
-      password: this.patientForm.value.password,
-      fullName: this.patientForm.value.fullName,
-      dateOfBirth: this.patientForm.value.dateOfBirth,
-      contactNumber: this.patientForm.value.contactNumber,
-      email: this.patientForm.value.email,
-      address: this.patientForm.value.address
-    };
-    this.service.updatePatient(dto as any).subscribe({
-      next: () => {
-        this.successMessage = 'Patient updated successfully.';
-      },
-      error: (err: HttpErrorResponse) => this.handleError(err)
-    });
-  }
-
-  private handleError(error: HttpErrorResponse): void {
-    if (typeof error.error === 'string') {
-      this.errorMessage = error.error;
-    } else if (error.message) {
-      this.errorMessage = error.message;
-    } else {
-      this.errorMessage = 'Failed to update patient.';
-    }
-  }
 }
